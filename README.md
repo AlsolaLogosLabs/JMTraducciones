@@ -43,6 +43,7 @@ JMTraducciones/
 │       └── deploy.yml
 │
 ├── public/
+│   ├── apple-touch-icon.png
 │   ├── favicon.ico
 │   ├── favicon.svg
 │   └── og-image.png
@@ -194,6 +195,7 @@ Todos los recursos internos se construyen con `import.meta.env.BASE_URL`.
 
 - Título y descripción específicos del servicio.
 - URL canónica.
+- Favicon SVG + ICO y `apple-touch-icon.png` (180 × 180) con la marca JM.
 - Open Graph y Twitter Card con imagen social propia (`og-image.png`, 1200 × 630).
 - Datos estructurados JSON-LD de tipo `ProfessionalService`.
 - Sitemap generado por `@astrojs/sitemap`.
