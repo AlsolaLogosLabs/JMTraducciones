@@ -22,6 +22,8 @@
   /* El dorado es solo un acento. La variante "strong" cumple contraste como texto sobre fondos claros. */
   --color-accent: #c6a15b;
   --color-accent-strong: #7d5f27;
+  /* Dorado aclarado para texto pequeño sobre verde petróleo (4.6:1 sobre --color-primary). */
+  --color-accent-on-primary: #cfaf74;
   --color-accent-soft: #f5ecda;
   --color-accent-tint: rgb(198 161 91 / 0.14);
 
