@@ -4,32 +4,45 @@ import SocialLink from "./ui/SocialLink.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
 import { contact } from "../data/contact";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent, getWhatsAppURLs } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
+
+const whatsappURLs = getWhatsAppURLs(locale);
 ---
 
 <section id="contacto" class="section section-inverse contact" aria-labelledby="contact-title">
   <div class="container contact-grid">
     <div class="contact-main">
       <SectionHeader
-        label="Contacto"
-        title="Solicita tu cotización"
+        label={t.contact.label}
+        title={t.contact.title}
         titleId="contact-title"
-        description="Envía tu documento por WhatsApp para recibir una cotización. También puedes escribir por correo electrónico o Instagram."
+        description={t.contact.description}
         variant="inverse"
         large
       />
 
-      <WhatsAppButton label="Solicitar cotización por WhatsApp" variant="light" />
+      <WhatsAppButton locale={locale} label={t.contact.cta} variant="light" />
     </div>
 
     <div class="contact-panel">
-      <h3 class="panel-title">Canales de contacto</h3>
+      <h3 class="panel-title">{t.contact.channelsTitle}</h3>
 
       <ul class="contact-links">
         <li>
           <SocialLink
+            locale={locale}
             label={contact.whatsapp.label}
             value={contact.whatsapp.display}
-            href={contact.whatsapp.quoteURL}
+            href={whatsappURLs.quote}
             icon="whatsapp"
             featured
           />
@@ -37,6 +50,7 @@ import { contact } from "../data/contact";
 
         <li>
           <SocialLink
+            locale={locale}
             label={contact.email.label}
             value={contact.email.address}
             href={contact.email.url}
@@ -47,6 +61,7 @@ import { contact } from "../data/contact";
 
         <li>
           <SocialLink
+            locale={locale}
             label={contact.instagram.label}
             value={contact.instagram.handle}
             href={contact.instagram.url}

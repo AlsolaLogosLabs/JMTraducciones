@@ -1,18 +1,24 @@
 ---
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent } from "../../i18n/content";
+
 interface Props {
+  locale?: Locale;
   index: number;
   title: string;
   description: string;
 }
 
-const { index, title, description } = Astro.props;
+const { locale = defaultLocale, index, title, description } = Astro.props;
+
+const t = getContent(locale);
 
 const formattedIndex = String(index).padStart(2, "0");
 ---
 
 <article class="step">
   <p class="step-index">
-    <span class="sr-only">Paso</span>
+    <span class="sr-only">{t.a11y.step}</span>
     {formattedIndex}
   </p>
 

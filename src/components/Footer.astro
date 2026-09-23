@@ -2,6 +2,16 @@
 import LanguagePair from "./ui/LanguagePair.astro";
 
 import { profile } from "../data/profile";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
 
 const copyright = `© ${new Date().getFullYear()} ${profile.brand}`;
 ---
@@ -12,7 +22,7 @@ const copyright = `© ${new Date().getFullYear()} ${profile.brand}`;
       <p class="brand-name">{profile.brand}</p>
 
       <p>
-        {profile.name} · {profile.role} · <LanguagePair />
+        {profile.name} · {t.profile.role} · <LanguagePair locale={locale} />
       </p>
     </div>
 

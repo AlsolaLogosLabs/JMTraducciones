@@ -1,7 +1,7 @@
 const whatsappNumber = "50766496982";
 
-// Genera un enlace wa.me con un mensaje inicial prellenado.
-const createWhatsAppURL = (message: string) =>
+// Único punto donde se construyen enlaces wa.me. El mensaje prellenado depende del idioma.
+export const createWhatsAppURL = (message: string) =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 export const contact = {
@@ -12,12 +12,6 @@ export const contact = {
 
     // Formato E.164 utilizado en datos estructurados.
     phone: `+${whatsappNumber}`,
-
-    quoteURL: createWhatsAppURL("Hola, quisiera solicitar una cotización para una traducción."),
-
-    expressURL: createWhatsAppURL(
-      "Hola, quisiera consultar la disponibilidad del servicio express de traducción.",
-    ),
   },
 
   email: {

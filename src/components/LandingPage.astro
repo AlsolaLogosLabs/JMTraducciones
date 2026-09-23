@@ -1,0 +1,47 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+import Header from "./Header.astro";
+import Hero from "./Hero.astro";
+import Services from "./Services.astro";
+import Credentials from "./Credentials.astro";
+import Process from "./Process.astro";
+import Express from "./Express.astro";
+import Contact from "./Contact.astro";
+import Footer from "./Footer.astro";
+import FloatingWhatsApp from "./FloatingWhatsApp.astro";
+
+import type { Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
+
+interface Props {
+  locale: Locale;
+}
+
+// Composición completa de la landing, compartida por todos los idiomas.
+const { locale } = Astro.props;
+
+const t = getContent(locale);
+---
+
+<MainLayout locale={locale} title={t.seo.title} description={t.seo.description} alternates>
+  <Header locale={locale} />
+
+  <main id="main-content">
+    <Hero locale={locale} />
+
+    <Services locale={locale} />
+
+    <Credentials locale={locale} />
+
+    <Process locale={locale} />
+
+    <Express locale={locale} />
+
+    <Contact locale={locale} />
+  </main>
+
+  <Footer locale={locale} />
+
+  <FloatingWhatsApp locale={locale} />
+</MainLayout>

@@ -1,18 +1,33 @@
 ---
 import BrandLogo from "./ui/BrandLogo.astro";
+import LanguageSwitcher from "./ui/LanguageSwitcher.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
-import { navigationItems } from "../data/navigation";
+import { navigationSections } from "../data/navigation";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
+
+const navigationItems = navigationSections.map((section) => ({
+  section,
+  label: t.header.navigation[section],
+}));
 ---
 
 <header class="header">
   <a class="skip-link" href="#main-content">
-    {" "}
-    Saltar al contenido{" "}
+    {t.header.skipLink}
   </a>
 
-  <nav class="navbar container" aria-label="Navegación principal">
-    <BrandLogo />
+  <nav class="navbar container" aria-label={t.header.navigationLabel}>
+    <BrandLogo locale={locale} />
 
     <div class="desktop-navigation">
       {navigationItems.map((item) => (
@@ -22,11 +37,13 @@ import { navigationItems } from "../data/navigation";
       ))}
     </div>
 
-    <WhatsAppButton label="Cotizar" class="header-cta" />
+    <LanguageSwitcher locale={locale} class="header-language" />
+
+    <WhatsAppButton locale={locale} label={t.header.quoteCta} class="header-cta" />
 
     <details class="mobile-menu">
       <summary class="menu-toggle">
-        <span> Menú </span>
+        <span>{t.header.menu}</span>
 
         <span class="menu-icon" aria-hidden="true">
           <span></span>
@@ -42,7 +59,9 @@ import { navigationItems } from "../data/navigation";
           </a>
         ))}
 
-        <WhatsAppButton label="Cotizar por WhatsApp" class="mobile-cta" />
+        <LanguageSwitcher locale={locale} class="mobile-language" />
+
+        <WhatsAppButton locale={locale} label={t.header.mobileQuoteCta} class="mobile-cta" />
       </div>
     </details>
   </nav>
@@ -300,6 +319,8 @@ import { navigationItems } from "../data/navigation";
     padding: 0.6rem 1rem;
 
     font-size: 0.95rem;
+
+    white-space: nowrap;
   }
 
   .mobile-menu {
@@ -433,6 +454,15 @@ import { navigationItems } from "../data/navigation";
     margin-top: 0.5rem;
   }
 
+  /* En pantallas muy estrechas el selector de idioma pasa al menú para no desbordar el header. */
+  .mobile-navigation :global(.mobile-language) {
+    margin: 0.5rem 0 0 0.5rem;
+
+    display: none;
+
+    align-self: flex-start;
+  }
+
   .skip-link {
     position: fixed;
 
@@ -461,6 +491,26 @@ import { navigationItems } from "../data/navigation";
     transform: translateY(0);
   }
 
+  /* Escritorio estrecho: se compacta el espaciado para que quepan navegación, idioma y CTA. */
+  @media (max-width: 1240px) {
+    .navbar {
+      gap: 1rem;
+    }
+
+    .desktop-navigation {
+      padding-right: 0.75rem;
+    }
+
+    .desktop-navigation a {
+      padding-inline: 0.6rem;
+    }
+
+    .desktop-navigation a.is-active::after {
+      right: 0.6rem;
+      left: 0.6rem;
+    }
+  }
+
   @media (max-width: 1080px) {
     .navbar {
       gap: 0.75rem;
@@ -473,6 +523,16 @@ import { navigationItems } from "../data/navigation";
 
     .mobile-menu {
       display: block;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header :global(.header-language) {
+      display: none;
+    }
+
+    .mobile-navigation :global(.mobile-language) {
+      display: inline-flex;
     }
   }
 </style>

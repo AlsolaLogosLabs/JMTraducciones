@@ -1,14 +1,19 @@
 ---
 import { profile } from "../../data/profile";
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent } from "../../i18n/content";
 
 interface Props {
+  locale?: Locale;
   size?: number;
   // Usar cuando el mismo dato ya aparece como texto cerca del distintivo.
   decorative?: boolean;
 }
 
 // Distintivo de diseño propio. No reproduce sellos, escudos ni logos oficiales.
-const { size = 140, decorative = false } = Astro.props;
+const { locale = defaultLocale, size = 140, decorative = false } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <svg
@@ -17,7 +22,7 @@ const { size = 140, decorative = false } = Astro.props;
   height={size}
   viewBox="0 0 140 140"
   role={decorative ? undefined : "img"}
-  aria-label={decorative ? undefined : `Idoneidad desde ${profile.authorizedSince}`}
+  aria-label={decorative ? undefined : t.profile.authorizedSinceText}
   aria-hidden={decorative ? "true" : undefined}
   focusable="false"
 >
@@ -26,7 +31,7 @@ const { size = 140, decorative = false } = Astro.props;
   <circle class="seal-ring seal-ring-dashed" cx="70" cy="70" r="52"></circle>
 
   <text class="seal-label" x="70" y="58" text-anchor="middle">
-    IDONEIDAD
+    {t.credentials.sealLabel}
   </text>
 
   <path class="seal-ring" d="M52 67h36"></path>

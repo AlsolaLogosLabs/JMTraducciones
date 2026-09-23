@@ -9,7 +9,12 @@ El objetivo del sitio es explicar los servicios disponibles, transmitir confianz
 
 ## 🌐 Sitio publicado
 
-https://alsolalogoslabs.github.io/JMTraducciones/
+Sitio bilingüe; el español es el idioma principal:
+
+| Idioma  | URL                                                  |
+| ------- | ---------------------------------------------------- |
+| Español | https://alsolalogoslabs.github.io/JMTraducciones/    |
+| English | https://alsolalogoslabs.github.io/JMTraducciones/en/ |
 
 ## 🧭 Secciones
 
@@ -57,14 +62,17 @@ JMTraducciones/
 │   │   ├── Footer.astro
 │   │   ├── Header.astro
 │   │   ├── Hero.astro
+│   │   ├── LandingPage.astro
 │   │   ├── Process.astro
 │   │   ├── Services.astro
 │   │   │
 │   │   └── ui/
 │   │       ├── CredentialCard.astro
+│   │       ├── BrandLogo.astro
 │   │       ├── Icon.astro
 │   │       ├── icon-names.ts
 │   │       ├── LanguagePair.astro
+│   │       ├── LanguageSwitcher.astro
 │   │       ├── Seal.astro
 │   │       ├── SectionHeader.astro
 │   │       ├── ServiceCard.astro
@@ -80,10 +88,17 @@ JMTraducciones/
 │   │   ├── profile.ts
 │   │   └── services.ts
 │   │
+│   ├── i18n/
+│   │   ├── config.ts
+│   │   └── content.ts
+│   │
 │   ├── layouts/
 │   │   └── MainLayout.astro
 │   │
 │   ├── pages/
+│   │   ├── 404.astro
+│   │   ├── en/
+│   │   │   └── index.astro
 │   │   ├── index.astro
 │   │   └── robots.txt.ts
 │   │
@@ -99,8 +114,11 @@ JMTraducciones/
 ## 🧩 Arquitectura
 
 ```text
-MainLayout (SEO, Open Graph, JSON-LD)
-├── Header            navegación, menú móvil, scroll spy y CTA
+index.astro (es) / en/index.astro (en)
+└── LandingPage locale
+
+MainLayout (SEO, Open Graph, JSON-LD, hreflang)
+├── Header            navegación, menú móvil, scroll spy, LanguageSwitcher y CTA
 ├── main
 │   ├── Hero          LanguagePair, Seal, WhatsAppButton
 │   ├── Services      ServiceCard
@@ -112,14 +130,35 @@ MainLayout (SEO, Open Graph, JSON-LD)
 └── FloatingWhatsApp  visible en pantallas medianas y pequeñas
 ```
 
-El contenido está separado de la interfaz en `src/data/`:
+`LandingPage.astro` compone la landing completa y recibe el `locale` (`"es"` o `"en"`), que se transmite a todos los componentes. Los componentes usan `"es"` por defecto, por lo que la 404 global sigue en español.
 
-- `profile.ts`: marca, profesional, condición, idiomas, ubicación, año de idoneidad y textos SEO.
-- `contact.ts`: WhatsApp, email e Instagram. Las URLs de WhatsApp (`wa.me`) y sus mensajes iniciales se generan **solo aquí**.
-- `services.ts`: categorías de servicios y sus documentos.
-- `credentials.ts`: datos de la credencial y aviso de servicio privado.
-- `process.ts`: pasos de "Cómo funciona".
-- `navigation.ts`: elementos del menú. El scroll spy del Header deriva las secciones observadas de estos enlaces.
+Los datos que no cambian por idioma están en `src/data/`:
+
+- `profile.ts`: marca, nombre del profesional y año de idoneidad.
+- `contact.ts`: WhatsApp, email e Instagram. Las URLs de WhatsApp (`wa.me`) se construyen **solo aquí** con `createWhatsAppURL`.
+- `services.ts`: orden e iconos de las categorías de servicios.
+- `credentials.ts`: orden de los campos de la credencial.
+- `process.ts`: orden de los pasos de "Cómo funciona".
+- `navigation.ts`: IDs de sección del menú, comunes a ambos idiomas. El scroll spy del Header deriva las secciones observadas de estos enlaces.
+
+## 🌎 Internacionalización
+
+El sitio usa el i18n nativo de Astro (`astro.config.mjs`), sin librerías externas:
+
+```js
+i18n: {
+  locales: ["es", "en"],
+  defaultLocale: "es",
+  routing: { prefixDefaultLocale: false },
+},
+```
+
+- `src/i18n/config.ts`: tipo `Locale`, idioma por defecto, nombre y `og:locale` de cada idioma, y URLs de inicio por idioma mediante `astro:i18n` (respetan `base` y `trailingSlash`).
+- `src/i18n/content.ts`: todos los textos traducibles, incluidos los textos accesibles (`aria-label`, `sr-only`), tipados con `LocaleContent` para que ambos idiomas tengan las mismas claves.
+- `LanguageSwitcher.astro`: selector `ES | EN` en el Header (dentro del menú en pantallas de hasta 480 px). El idioma actual lleva `aria-current`; el otro es un enlace con `lang` y `hreflang`. No hay detección ni redirección automática.
+- Mensajes de WhatsApp localizados: el texto prellenado de cotización y de servicio express se define por idioma en `content.ts` (`getWhatsAppURLs`); el número es único.
+
+Para añadir o cambiar un texto, edítalo en ambos idiomas dentro de `content.ts`.
 
 La identidad visual (verde petróleo, dorado suave como acento y fondos marfil) se define como variables en `src/styles/global.css`. Los títulos usan una pila serif del sistema y el resto de la interfaz una sans-serif del sistema, sin fuentes externas.
 
@@ -193,12 +232,15 @@ Todos los recursos internos se construyen con `import.meta.env.BASE_URL`.
 
 ## 🔍 SEO
 
-- Título y descripción específicos del servicio.
-- URL canónica.
+- Título y descripción específicos del servicio, localizados por idioma.
+- URL canónica por idioma (`/JMTraducciones/` y `/JMTraducciones/en/`).
+- `hreflang` `es`, `en` y `x-default` (español) en las páginas principales.
+- `<html lang>`, `og:locale` (`es_PA` / `en_PA`) y `og:locale:alternate` según el idioma.
 - Favicon SVG + ICO y `apple-touch-icon.png` (180 × 180) con la marca JM.
 - Open Graph y Twitter Card con imagen social propia (`og-image.png`, 1200 × 630).
-- Datos estructurados JSON-LD de tipo `ProfessionalService`.
-- Sitemap generado por `@astrojs/sitemap`.
+- Datos estructurados JSON-LD de tipo `ProfessionalService`, localizados por idioma.
+- Sitemap generado por `@astrojs/sitemap` con ambas versiones.
+- Página 404 con `noindex`, sin canonical ni hreflang.
 - `robots.txt` generado en `src/pages/robots.txt.ts`.
 
 ## ♿ Accesibilidad

@@ -3,14 +3,20 @@ import Icon from "./Icon.astro";
 
 import type { IconName } from "./icon-names";
 
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent } from "../../i18n/content";
+
 interface Props {
+  locale?: Locale;
   title: string;
   description: string;
   items: string[];
   icon: IconName;
 }
 
-const { title, description, items, icon } = Astro.props;
+const { locale = defaultLocale, title, description, items, icon } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <article class="service-card">
@@ -26,7 +32,7 @@ const { title, description, items, icon } = Astro.props;
     </div>
   </header>
 
-  <ul class="items" aria-label={`Documentos: ${title}`}>
+  <ul class="items" aria-label={t.a11y.documentsFor(title)}>
     {items.map((item) => (
       <li>
         <span class="item-check">

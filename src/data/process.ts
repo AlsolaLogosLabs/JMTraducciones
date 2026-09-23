@@ -1,30 +1,4 @@
-export interface ProcessStep {
-  title: string;
-  description: string;
-}
+// Orden de los pasos de "Cómo funciona". Sus textos están en src/i18n/content.ts.
+export const processSteps = ["send", "quote", "confirm", "deliver"] as const;
 
-export const processSteps: ProcessStep[] = [
-  {
-    title: "Envía tu documento",
-
-    description: "Comparte por WhatsApp o correo electrónico el documento que necesitas traducir.",
-  },
-
-  {
-    title: "Recibe una cotización",
-
-    description: "Se revisan el tipo y la extensión del documento para enviarte una cotización.",
-  },
-
-  {
-    title: "Confirma el servicio",
-
-    description: "Confirma la cotización para dar inicio a la traducción.",
-  },
-
-  {
-    title: "Recibe tu traducción",
-
-    description: "Recibe tu traducción certificada una vez finalizada.",
-  },
-];
+export type ProcessStepId = (typeof processSteps)[number];

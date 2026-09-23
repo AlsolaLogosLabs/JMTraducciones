@@ -2,7 +2,16 @@
 import Icon from "./ui/Icon.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
-import { contact } from "../data/contact";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent, getWhatsAppURLs } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <section id="express" class="section express" aria-labelledby="express-title">
@@ -14,19 +23,17 @@ import { contact } from "../data/contact";
       </div>
 
       <div class="express-content">
-        <p class="section-label">Servicio express</p>
+        <p class="section-label">{t.express.label}</p>
 
-        <h2 id="express-title">¿Necesitas tu traducción con urgencia?</h2>
+        <h2 id="express-title">{t.express.title}</h2>
 
-        <p class="express-description">
-          Consulta por disponibilidad del servicio express de 24 horas. El plazo dependerá del tipo
-          y extensión del documento.
-        </p>
+        <p class="express-description">{t.express.description}</p>
       </div>
 
       <WhatsAppButton
-        label="Consultar servicio express"
-        href={contact.whatsapp.expressURL}
+        locale={locale}
+        label={t.express.cta}
+        href={getWhatsAppURLs(locale).express}
         class="express-cta"
       />
     </div>

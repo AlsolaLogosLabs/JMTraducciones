@@ -3,21 +3,36 @@ import SectionHeader from "./ui/SectionHeader.astro";
 import StepCard from "./ui/StepCard.astro";
 
 import { processSteps } from "../data/process";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <section id="como-funciona" class="section section-alt" aria-labelledby="process-title">
   <div class="container">
     <SectionHeader
-      label="Cómo funciona"
-      title="Solicitar una traducción es sencillo"
+      label={t.process.label}
+      title={t.process.title}
       titleId="process-title"
-      description="Cuatro pasos desde el primer mensaje hasta recibir tu traducción certificada."
+      description={t.process.description}
     />
 
     <ol class="process-steps">
       {processSteps.map((step, index) => (
         <li>
-          <StepCard index={index + 1} title={step.title} description={step.description} />
+          <StepCard
+            locale={locale}
+            index={index + 1}
+            title={t.process.steps[step].title}
+            description={t.process.steps[step].description}
+          />
         </li>
       ))}
     </ol>

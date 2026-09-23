@@ -3,25 +3,46 @@ import "../styles/global.css";
 
 import { contact } from "../data/contact";
 import { profile } from "../data/profile";
+import {
+  defaultLocale,
+  getAbsoluteHomeURL,
+  localeSettings,
+  locales,
+  type Locale,
+} from "../i18n/config";
+import { getContent } from "../i18n/content";
 
 interface Props {
+  locale?: Locale;
   title: string;
   description?: string;
   // Páginas de error: no se indexan, no declaran URL canónica ni datos estructurados.
   noindex?: boolean;
+  // Páginas disponibles en todos los idiomas: añade hreflang y og:locale:alternate.
+  alternates?: boolean;
 }
 
-const { title, description = profile.seo.description, noindex = false } = Astro.props;
+const {
+  locale = defaultLocale,
+  title,
+  description = getContent(locale).seo.description,
+  noindex = false,
+  alternates = false,
+} = Astro.props;
+
+const t = getContent(locale);
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const baseURL = import.meta.env.BASE_URL;
 
-const homeURL = new URL(baseURL, Astro.site);
+const homeURL = getAbsoluteHomeURL(locale);
 
 const ogImageURL = new URL(`${baseURL}og-image.png`, Astro.site);
 
-const socialImageAlt = `${profile.brand} - Traducciones certificadas inglés ↔ español en ${profile.location}`;
+const socialImageAlt = t.seo.socialImageAlt;
+
+const alternateLocales = locales.filter((option) => option !== locale);
 
 // Servicio profesional privado. La credencial se describe tal como consta en la
 // documentación oficial, sin presentar a JM Traducciones como entidad gubernamental.
@@ -34,7 +55,7 @@ const businessSchema = {
 
   description,
 
-  url: homeURL.href,
+  url: homeURL,
 
   image: ogImageURL.href,
 
@@ -46,7 +67,7 @@ const businessSchema = {
 
   areaServed: {
     "@type": "Country",
-    name: profile.location,
+    name: t.profile.location,
   },
 
   address: {
@@ -61,22 +82,22 @@ const businessSchema = {
 
     name: profile.name,
 
-    jobTitle: profile.role,
+    jobTitle: t.profile.role,
 
     knowsLanguage: ["en", "es"],
 
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
 
-      name: `${profile.role} (${profile.languages.source} - ${profile.languages.target})`,
+      name: `${t.profile.role} (${t.profile.languages.source} - ${t.profile.languages.target})`,
 
-      credentialCategory: "Idoneidad profesional",
+      credentialCategory: t.seo.credentialCategory,
 
       dateCreated: String(profile.authorizedSince),
 
       recognizedBy: {
         "@type": "GovernmentOrganization",
-        name: profile.authority,
+        name: t.profile.authority,
       },
     },
   },
@@ -84,7 +105,7 @@ const businessSchema = {
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
 
@@ -104,6 +125,15 @@ const businessSchema = {
 
     {!noindex && <link rel="canonical" href={canonicalURL} />}
 
+    {alternates &&
+      locales.map((option) => (
+        <link rel="alternate" hreflang={option} href={getAbsoluteHomeURL(option)} />
+      ))}
+
+    {alternates && (
+      <link rel="alternate" hreflang="x-default" href={getAbsoluteHomeURL(defaultLocale)} />
+    )}
+
     <link rel="sitemap" href={`${baseURL}sitemap-index.xml`} />
 
     <link rel="icon" type="image/svg+xml" href={`${baseURL}favicon.svg`} />
@@ -114,7 +144,12 @@ const businessSchema = {
 
     <meta property="og:type" content="website" />
 
-    <meta property="og:locale" content="es_PA" />
+    <meta property="og:locale" content={localeSettings[locale].ogLocale} />
+
+    {alternates &&
+      alternateLocales.map((option) => (
+        <meta property="og:locale:alternate" content={localeSettings[option].ogLocale} />
+      ))}
 
     <meta property="og:title" content={title} />
 

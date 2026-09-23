@@ -1,9 +1,11 @@
 ---
 import Icon from "./Icon.astro";
 
-import { contact } from "../../data/contact";
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent, getWhatsAppURLs } from "../../i18n/content";
 
 interface Props {
+  locale?: Locale;
   label: string;
   href?: string;
   variant?: "primary" | "secondary" | "light";
@@ -11,11 +13,14 @@ interface Props {
 }
 
 const {
+  locale = defaultLocale,
   label,
-  href = contact.whatsapp.quoteURL,
+  href = getWhatsAppURLs(locale).quote,
   variant = "primary",
   class: className,
 } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <a
@@ -26,5 +31,5 @@ const {
 >
   <Icon name="whatsapp" size={20} />
   <span>{label}</span>
-  <span class="sr-only">(WhatsApp, abre en una pestaña nueva)</span>
+  <span class="sr-only">{t.a11y.whatsappNewTab}</span>
 </a>

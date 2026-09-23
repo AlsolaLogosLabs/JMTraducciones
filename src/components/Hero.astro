@@ -5,50 +5,53 @@ import Seal from "./ui/Seal.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
 import { profile } from "../data/profile";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
 
-// Datos de confianza complementarios: no repiten lo que ya dicen el título y el bloque profesional.
-const trustItems = [
-  "Cotización antes de iniciar",
-  "Servicio express bajo consulta",
-  `Reconocimiento del ${profile.authority}`,
-];
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <section id="inicio" class="hero" aria-labelledby="hero-title">
   <div class="hero-grid container">
     <div class="hero-content">
       <h1 id="hero-title">
-        Traducciones certificadas
+        {t.hero.titleStart}
         <span class="title-languages">
-          <LanguagePair />
+          <LanguagePair locale={locale} />
         </span>
-        en {profile.location}
+        {t.hero.titleEnd}
       </h1>
 
-      <p class="description">{profile.serviceSummary}</p>
+      <p class="description">{t.profile.serviceSummary}</p>
 
       <div class="translator">
         <p class="translator-name">{profile.name}</p>
 
         <p class="translator-role">
-          {profile.role}
+          {t.profile.role}
           <span class="translator-divider" aria-hidden="true">
             ·
           </span>
-          Idoneidad desde {profile.authorizedSince}
+          {t.profile.authorizedSinceText}
         </p>
       </div>
 
       <div class="actions">
-        <WhatsAppButton label="Cotizar por WhatsApp" />
+        <WhatsAppButton locale={locale} label={t.hero.quoteCta} />
 
         <a class="button button-secondary" href="#servicios">
-          Ver servicios
+          {t.hero.servicesCta}
         </a>
       </div>
 
-      <ul class="trust" aria-label="Información del servicio">
-        {trustItems.map((item) => (
+      <ul class="trust" aria-label={t.hero.trustLabel}>
+        {t.hero.trustItems.map((item) => (
           <li>
             <Icon name="check" size={18} />
             {item}
@@ -87,7 +90,7 @@ const trustItems = [
       <span class="visual-arrow">↔</span>
 
       <div class="visual-seal">
-        <Seal size={104} decorative />
+        <Seal locale={locale} size={104} decorative />
       </div>
     </div>
   </div>

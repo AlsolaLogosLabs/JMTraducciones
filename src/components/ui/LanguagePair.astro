@@ -1,10 +1,19 @@
 ---
-import { profile } from "../../data/profile";
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent } from "../../i18n/content";
 
-const { source, target } = profile.languages;
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
+
+const { source, target } = t.profile.languages;
 
 // Se muestra "Inglés ↔ Español" y se anuncia "Inglés y Español" a lectores de pantalla.
-const accessibleLabel = `${source} y ${target}`;
+const accessibleLabel = t.a11y.languagePair(source, target);
 ---
 
 <span class="language-pair">

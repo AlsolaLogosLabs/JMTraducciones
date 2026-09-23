@@ -3,37 +3,52 @@ import SectionHeader from "./ui/SectionHeader.astro";
 import ServiceCard from "./ui/ServiceCard.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
-import { serviceCategories, servicesSummary } from "../data/services";
+import { serviceCategories } from "../data/services";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <section id="servicios" class="section section-alt" aria-labelledby="services-title">
   <div class="container">
     <SectionHeader
-      label="Servicios"
-      title="Traducciones certificadas"
+      label={t.services.label}
+      title={t.services.title}
       titleId="services-title"
-      description={servicesSummary}
+      description={t.services.summary}
     />
 
     <div class="services-grid">
-      {serviceCategories.map((category) => (
-        <ServiceCard
-          title={category.title}
-          description={category.description}
-          icon={category.icon}
-          items={category.items}
-        />
-      ))}
+      {serviceCategories.map((category) => {
+        const text = t.services.categories[category.id];
+
+        return (
+          <ServiceCard
+            locale={locale}
+            title={text.title}
+            description={text.description}
+            icon={category.icon}
+            items={text.items}
+          />
+        );
+      })}
     </div>
 
     <div class="services-cta">
       <div>
-        <p class="cta-title">¿Tienes un documento para traducir?</p>
+        <p class="cta-title">{t.services.ctaTitle}</p>
 
-        <p class="cta-text">Envíalo por WhatsApp y recibe una cotización.</p>
+        <p class="cta-text">{t.services.ctaText}</p>
       </div>
 
-      <WhatsAppButton label="Enviar documento" variant="secondary" />
+      <WhatsAppButton locale={locale} label={t.services.ctaButton} variant="secondary" />
     </div>
   </div>
 </section>

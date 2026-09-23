@@ -1,15 +1,24 @@
 ---
 import Icon from "./ui/Icon.astro";
 
-import { contact } from "../data/contact";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent, getWhatsAppURLs } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
 ---
 
 <a
   class="floating-whatsapp"
-  href={contact.whatsapp.quoteURL}
+  href={getWhatsAppURLs(locale).quote}
   target="_blank"
   rel="noopener noreferrer"
-  aria-label="Cotizar por WhatsApp. Abre en una pestaña nueva."
+  aria-label={t.floatingWhatsApp.label}
 >
   <Icon name="whatsapp" size={26} />
 </a>

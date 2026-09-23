@@ -3,7 +3,11 @@ import Icon from "./Icon.astro";
 
 import type { IconName } from "./icon-names";
 
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent } from "../../i18n/content";
+
 interface Props {
+  locale?: Locale;
   label: string;
   value: string;
   href: string;
@@ -13,12 +17,22 @@ interface Props {
   featured?: boolean;
 }
 
-const { label, value, href, icon, external = true, featured = false } = Astro.props;
+const {
+  locale = defaultLocale,
+  label,
+  value,
+  href,
+  icon,
+  external = true,
+  featured = false,
+} = Astro.props;
+
+const t = getContent(locale);
 
 const accessibleLabel = [
   `${label}: ${value}.`,
-  featured ? "Canal principal." : "",
-  external ? "Abre en una pestaña nueva." : "",
+  featured ? `${t.a11y.primaryChannel}.` : "",
+  external ? t.a11y.opensNewTab : "",
 ]
   .filter(Boolean)
   .join(" ");
@@ -38,7 +52,7 @@ const accessibleLabel = [
   <span class="social-content">
     <span class="social-label">
       {label}
-      {featured && <span class="social-badge">Canal principal</span>}
+      {featured && <span class="social-badge">{t.a11y.primaryChannel}</span>}
     </span>
 
     <strong>{value}</strong>
