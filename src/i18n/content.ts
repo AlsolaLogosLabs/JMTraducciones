@@ -364,7 +364,7 @@ const en: LocaleContent = {
       },
       academic: {
         title: "Academic documents",
-        description: "Study records for academic or professional procedures.",
+        description: "Educational records for academic or professional applications.",
         items: ["Academic transcripts", "Diplomas", "Other academic documents"],
       },
       technical: {
@@ -375,7 +375,7 @@ const en: LocaleContent = {
       other: {
         title: "Other documents",
         description:
-          "If your document is not on this list, send it via WhatsApp so it can be reviewed before quoting.",
+          "If your document is not on this list, send it via WhatsApp so it can be reviewed before a quote is provided.",
         items: ["Other documents upon request"],
       },
     },
@@ -411,7 +411,7 @@ const en: LocaleContent = {
       },
       quote: {
         title: "Receive a quote",
-        description: "The type and length of the document are reviewed to send you a quote.",
+        description: "The document type and length are reviewed before a quote is sent to you.",
       },
       confirm: {
         title: "Confirm the service",
