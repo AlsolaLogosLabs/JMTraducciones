@@ -1,0 +1,37 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Services from "../components/Services.astro";
+import Credentials from "../components/Credentials.astro";
+import Process from "../components/Process.astro";
+import Express from "../components/Express.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+import FloatingWhatsApp from "../components/FloatingWhatsApp.astro";
+
+import { profile } from "../data/profile";
+---
+
+<MainLayout title={profile.seo.title} description={profile.seo.description}>
+  <Header />
+
+  <main id="main-content">
+    <Hero />
+
+    <Services />
+
+    <Credentials />
+
+    <Process />
+
+    <Express />
+
+    <Contact />
+  </main>
+
+  <Footer />
+
+  <FloatingWhatsApp />
+</MainLayout>

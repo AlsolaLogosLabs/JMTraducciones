@@ -1,0 +1,419 @@
+---
+import Icon from "./ui/Icon.astro";
+import LanguagePair from "./ui/LanguagePair.astro";
+import Seal from "./ui/Seal.astro";
+import WhatsAppButton from "./ui/WhatsAppButton.astro";
+
+import { profile } from "../data/profile";
+---
+
+<section id="inicio" class="hero" aria-labelledby="hero-title">
+  <div class="hero-grid container">
+    <div class="hero-content">
+      <p class="eyebrow">
+        {profile.brand} · {profile.location}
+      </p>
+
+      <h1 id="hero-title">
+        Traducciones certificadas
+        <span class="title-languages">
+          <LanguagePair />
+        </span>
+        en {profile.location}
+      </h1>
+
+      <p class="description">{profile.headline}</p>
+
+      <p class="translator">
+        <strong>{profile.name}</strong>
+        <span>{profile.role}</span>
+      </p>
+
+      <div class="actions">
+        <WhatsAppButton label="Cotizar por WhatsApp" />
+
+        <a class="button button-secondary" href="#servicios">
+          {" "}
+          Ver servicios{" "}
+        </a>
+      </div>
+
+      <ul class="trust" aria-label="Credenciales principales">
+        <li>
+          <Icon name="check" size={18} />
+          {profile.role}
+        </li>
+
+        <li>
+          <Icon name="check" size={18} />
+          <LanguagePair />
+        </li>
+
+        <li>
+          <Icon name="check" size={18} />
+          Idoneidad desde {profile.authorizedSince}
+        </li>
+      </ul>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="sheet sheet-back"></div>
+
+      <div class="sheet sheet-front">
+        <p class="sheet-label">Traducción certificada</p>
+
+        <p class="sheet-languages">EN ↔ ES</p>
+
+        <div class="sheet-lines">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="sheet-signature">
+          <span></span>
+          <p>{profile.role}</p>
+        </div>
+
+        <div class="sheet-seal">
+          <Seal size={112} />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+
+    /* Ocupa la pantalla, con un tope para monitores muy altos. */
+    min-height: min(calc(100svh - var(--header-height)), 820px);
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    background:
+      radial-gradient(circle at 88% 12%, rgb(198 161 91 / 0.14), transparent 34%),
+      radial-gradient(circle at 70% 90%, rgb(23 76 79 / 0.08), transparent 40%),
+      var(--color-background);
+  }
+
+  .hero-grid {
+    padding-block: 5.5rem;
+
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 1.2fr)
+      minmax(300px, 0.8fr);
+
+    gap: clamp(3rem, 6vw, 5rem);
+
+    align-items: center;
+  }
+
+  .hero-content {
+    min-width: 0;
+  }
+
+  .eyebrow {
+    margin: 0 0 1.25rem;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 0.6rem;
+
+    color: var(--color-accent-strong);
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .eyebrow::before {
+    content: "";
+
+    width: 1.75rem;
+    height: 1px;
+
+    background: currentColor;
+  }
+
+  h1 {
+    margin: 0;
+
+    max-width: 720px;
+
+    color: var(--color-primary-hover);
+
+    font-size: clamp(2.4rem, 6.2vw, 4.4rem);
+    line-height: 1.08;
+
+    letter-spacing: -0.02em;
+  }
+
+  .title-languages {
+    display: block;
+
+    color: var(--color-primary);
+
+    font-style: italic;
+  }
+
+  .description {
+    max-width: 620px;
+
+    margin: 1.75rem 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 1.15rem;
+    line-height: 1.75;
+  }
+
+  .translator {
+    margin: 1.5rem 0 0;
+    padding-left: 1rem;
+
+    display: grid;
+
+    gap: 0.1rem;
+
+    border-left: 2px solid var(--color-accent);
+  }
+
+  .translator strong {
+    font-weight: 650;
+  }
+
+  .translator span {
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+  }
+
+  .actions {
+    margin-top: 2.25rem;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 0.9rem;
+  }
+
+  .trust {
+    margin: 2.5rem 0 0;
+    padding: 1.5rem 0 0;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 0.75rem 1.75rem;
+
+    border-top: 1px solid var(--color-border);
+
+    list-style: none;
+  }
+
+  .trust li {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 0.5rem;
+
+    color: var(--color-text);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .trust li :global(.icon) {
+    color: var(--color-accent-strong);
+  }
+
+  /* Ilustración documental decorativa. */
+  .hero-visual {
+    position: relative;
+
+    max-width: 400px;
+    width: 100%;
+
+    justify-self: center;
+
+    aspect-ratio: 4 / 5;
+  }
+
+  .sheet {
+    position: absolute;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface);
+  }
+
+  .sheet-back {
+    inset: 1.5rem 2.5rem -0.5rem -1rem;
+
+    background: var(--color-surface-alt);
+
+    transform: rotate(-5deg);
+  }
+
+  .sheet-front {
+    inset: 0 0 1.5rem 1rem;
+
+    padding: 2rem 1.75rem;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 24px 60px rgb(16 54 56 / 0.14);
+  }
+
+  .sheet-front::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0.55rem;
+
+    border: 1px solid var(--color-accent-soft);
+
+    border-radius: calc(var(--radius-md) - 3px);
+  }
+
+  .sheet-label {
+    margin: 0;
+
+    color: var(--color-accent-strong);
+
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .sheet-languages {
+    margin: 0.4rem 0 0;
+
+    color: var(--color-primary);
+
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+
+  .sheet-lines {
+    margin-top: 1.75rem;
+
+    display: grid;
+
+    gap: 0.85rem;
+  }
+
+  .sheet-lines span {
+    height: 7px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface-alt);
+  }
+
+  .sheet-lines span:nth-child(2n) {
+    width: 86%;
+  }
+
+  .sheet-lines span:nth-child(3n) {
+    width: 72%;
+  }
+
+  .sheet-signature {
+    margin-top: auto;
+
+    width: 55%;
+  }
+
+  .sheet-signature span {
+    display: block;
+
+    height: 1px;
+
+    background: var(--color-border-strong);
+  }
+
+  .sheet-signature p {
+    margin: 0.45rem 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .sheet-seal {
+    position: absolute;
+
+    right: -1.25rem;
+    bottom: -1.5rem;
+
+    filter: drop-shadow(0 10px 20px rgb(16 54 56 / 0.25));
+
+    transform: rotate(-8deg);
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      min-height: auto;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-visual {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero-grid {
+      padding-block: 4rem;
+    }
+
+    .description {
+      font-size: 1.05rem;
+    }
+
+    .actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .trust {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    h1 {
+      font-size: 2.15rem;
+    }
+
+    /* En pantallas muy estrechas se permite partir el par de idiomas. */
+    .title-languages :global(.language-pair) {
+      white-space: normal;
+    }
+  }
+</style>

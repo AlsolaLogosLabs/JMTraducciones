@@ -1,0 +1,82 @@
+---
+import SectionHeader from "./ui/SectionHeader.astro";
+import ServiceCard from "./ui/ServiceCard.astro";
+import WhatsAppButton from "./ui/WhatsAppButton.astro";
+
+import { serviceCategories, servicesSummary } from "../data/services";
+---
+
+<section id="servicios" class="section section-alt" aria-labelledby="services-title">
+  <div class="container">
+    <SectionHeader
+      label="Servicios"
+      title="Traducciones certificadas"
+      titleId="services-title"
+      description={servicesSummary}
+    />
+
+    <div class="services-grid">
+      {serviceCategories.map((category) => (
+        <ServiceCard
+          title={category.title}
+          description={category.description}
+          icon={category.icon}
+          items={category.items}
+        />
+      ))}
+    </div>
+
+    <div class="services-cta">
+      <p>¿Tienes un documento para traducir? Envíalo y recibe una cotización.</p>
+
+      <WhatsAppButton label="Cotizar por WhatsApp" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-grid {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+
+    gap: 1.5rem;
+  }
+
+  .services-cta {
+    margin-top: 3rem;
+    padding: 1.5rem 1.75rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem 2rem;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    background: var(--color-background);
+  }
+
+  .services-cta p {
+    margin: 0;
+
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 600px) {
+    .services-cta {
+      padding: 1.5rem;
+    }
+
+    .services-cta :global(.button) {
+      width: 100%;
+    }
+  }
+</style>

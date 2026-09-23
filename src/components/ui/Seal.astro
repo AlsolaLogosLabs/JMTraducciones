@@ -1,0 +1,76 @@
+---
+import { profile } from "../../data/profile";
+
+interface Props {
+  size?: number;
+}
+
+// Distintivo de diseño propio. No reproduce sellos, escudos ni logos oficiales.
+const { size = 140 } = Astro.props;
+---
+
+<svg
+  class="seal"
+  width={size}
+  height={size}
+  viewBox="0 0 140 140"
+  role="img"
+  aria-label={`Idoneidad desde ${profile.authorizedSince}`}
+>
+  <circle class="seal-base" cx="70" cy="70" r="66"></circle>
+  <circle class="seal-ring" cx="70" cy="70" r="58"></circle>
+  <circle class="seal-ring seal-ring-dashed" cx="70" cy="70" r="52"></circle>
+
+  <text class="seal-label" x="70" y="58" text-anchor="middle">
+    IDONEIDAD
+  </text>
+
+  <path class="seal-ring" d="M52 67h36"></path>
+
+  <text class="seal-year" x="70" y="92" text-anchor="middle">
+    {profile.authorizedSince}
+  </text>
+</svg>
+
+<style>
+  .seal {
+    display: block;
+
+    max-width: 100%;
+    height: auto;
+  }
+
+  .seal-base {
+    fill: var(--color-primary);
+  }
+
+  .seal-ring {
+    fill: none;
+
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+  }
+
+  .seal-ring-dashed {
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+  }
+
+  .seal-label {
+    fill: var(--color-accent);
+
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 700;
+
+    letter-spacing: 2.4px;
+  }
+
+  .seal-year {
+    fill: var(--color-text-inverse);
+
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 600;
+  }
+</style>

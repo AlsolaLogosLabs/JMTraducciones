@@ -1,0 +1,80 @@
+---
+import LanguagePair from "./ui/LanguagePair.astro";
+
+import { profile } from "../data/profile";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-container container">
+    <div class="footer-brand">
+      <p class="brand-name">{profile.brand}</p>
+
+      <p>
+        {profile.name} · {profile.role} · <LanguagePair />
+      </p>
+    </div>
+
+    <p class="copyright">
+      © {currentYear}
+      {profile.brand}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 2rem;
+
+    border-top: 1px solid var(--color-border-inverse);
+
+    color: var(--color-text-inverse-muted);
+
+    background: var(--color-dark);
+  }
+
+  .footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem 2rem;
+  }
+
+  .footer p {
+    margin: 0;
+
+    font-size: 0.9rem;
+  }
+
+  .footer-brand {
+    display: grid;
+
+    gap: 0.25rem;
+  }
+
+  .footer .brand-name {
+    color: var(--color-text-inverse);
+
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .copyright {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 700px) {
+    .footer {
+      /* Deja espacio para el botón flotante de WhatsApp. */
+      padding-bottom: 6rem;
+    }
+
+    .footer-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

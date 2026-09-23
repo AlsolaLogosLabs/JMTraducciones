@@ -1,0 +1,135 @@
+---
+import Icon from "./ui/Icon.astro";
+import WhatsAppButton from "./ui/WhatsAppButton.astro";
+
+import { contact } from "../data/contact";
+---
+
+<section id="express" class="section" aria-labelledby="express-title">
+  <div class="container">
+    <div class="express-card">
+      <div class="express-badge" aria-hidden="true">
+        <Icon name="clock" size={30} />
+        <span class="badge-value">24 h</span>
+        <span class="badge-caption">Express</span>
+      </div>
+
+      <div class="express-content">
+        <p class="section-label">Servicio express</p>
+
+        <h2 id="express-title" class="section-title">
+          ¿Necesitas tu traducción con urgencia?
+        </h2>
+
+        <p class="express-description">
+          Consulta por disponibilidad del servicio express de 24 horas. El plazo dependerá del tipo
+          y extensión del documento.
+        </p>
+
+        <WhatsAppButton label="Consultar servicio express" href={contact.whatsapp.expressURL} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .express-card {
+    position: relative;
+
+    padding: clamp(2rem, 5vw, 3.5rem);
+
+    display: grid;
+
+    grid-template-columns: auto minmax(0, 1fr);
+
+    gap: clamp(2rem, 5vw, 3.5rem);
+
+    align-items: center;
+
+    overflow: hidden;
+
+    border: 1px solid var(--color-accent);
+
+    border-radius: var(--radius-lg);
+
+    background:
+      radial-gradient(circle at 100% 0%, rgb(198 161 91 / 0.16), transparent 45%),
+      var(--color-surface);
+
+    box-shadow: var(--shadow-md);
+  }
+
+  .express-badge {
+    width: 150px;
+    height: 150px;
+
+    display: grid;
+    place-items: center;
+    align-content: center;
+
+    gap: 0.2rem;
+
+    border-radius: 50%;
+
+    color: var(--color-accent);
+
+    background: var(--color-primary);
+
+    box-shadow:
+      0 0 0 6px var(--color-surface),
+      0 0 0 7px var(--color-accent);
+  }
+
+  .badge-value {
+    color: var(--color-text-inverse);
+
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .badge-caption {
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .express-content .section-title {
+    max-width: 620px;
+  }
+
+  .express-description {
+    max-width: 620px;
+
+    margin: 1rem 0 2rem;
+
+    color: var(--color-text-muted);
+
+    font-size: 1.1rem;
+    line-height: 1.75;
+  }
+
+  @media (max-width: 700px) {
+    .express-card {
+      grid-template-columns: 1fr;
+    }
+
+    .express-badge {
+      width: 116px;
+      height: 116px;
+    }
+
+    .badge-value {
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .express-content :global(.button) {
+      width: 100%;
+    }
+  }
+</style>

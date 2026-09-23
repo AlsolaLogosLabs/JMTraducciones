@@ -1,0 +1,149 @@
+---
+import "../styles/global.css";
+
+import { contact } from "../data/contact";
+import { profile } from "../data/profile";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = profile.seo.description } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const baseURL = import.meta.env.BASE_URL;
+
+const homeURL = new URL(baseURL, Astro.site);
+
+const ogImageURL = new URL(`${baseURL}og-image.png`, Astro.site);
+
+const socialImageAlt = `${profile.brand} - Traducciones certificadas inglés ↔ español en ${profile.location}`;
+
+// Servicio profesional privado. La credencial se describe tal como consta en la
+// documentación oficial, sin presentar a JM Traducciones como entidad gubernamental.
+const businessSchema = {
+  "@context": "https://schema.org",
+
+  "@type": "ProfessionalService",
+
+  name: profile.brand,
+
+  description,
+
+  url: homeURL.href,
+
+  image: ogImageURL.href,
+
+  telephone: contact.whatsapp.phone,
+
+  email: contact.email.address,
+
+  sameAs: [contact.instagram.url],
+
+  areaServed: {
+    "@type": "Country",
+    name: profile.location,
+  },
+
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "PA",
+  },
+
+  knowsLanguage: ["es", "en"],
+
+  member: {
+    "@type": "Person",
+
+    name: profile.name,
+
+    jobTitle: profile.role,
+
+    knowsLanguage: ["en", "es"],
+
+    hasCredential: {
+      "@type": "EducationalOccupationalCredential",
+
+      name: `${profile.role} (${profile.languages.source} - ${profile.languages.target})`,
+
+      credentialCategory: "Idoneidad profesional",
+
+      dateCreated: String(profile.authorizedSince),
+
+      recognizedBy: {
+        "@type": "GovernmentOrganization",
+        name: profile.authority,
+      },
+    },
+  },
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{title}</title>
+
+    <meta name="description" content={description} />
+
+    <meta name="author" content={profile.brand} />
+
+    <meta name="robots" content="index, follow" />
+
+    <meta name="theme-color" content="#174c4f" />
+
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="canonical" href={canonicalURL} />
+
+    <link rel="sitemap" href={`${baseURL}sitemap-index.xml`} />
+
+    <link rel="icon" type="image/svg+xml" href={`${baseURL}favicon.svg`} />
+
+    <link rel="icon" href={`${baseURL}favicon.ico`} sizes="64x64" />
+
+    <meta property="og:type" content="website" />
+
+    <meta property="og:locale" content="es_PA" />
+
+    <meta property="og:title" content={title} />
+
+    <meta property="og:description" content={description} />
+
+    <meta property="og:url" content={canonicalURL} />
+
+    <meta property="og:site_name" content={profile.brand} />
+
+    <meta property="og:image" content={ogImageURL} />
+
+    <meta property="og:image:type" content="image/png" />
+
+    <meta property="og:image:width" content="1200" />
+
+    <meta property="og:image:height" content="630" />
+
+    <meta property="og:image:alt" content={socialImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="twitter:title" content={title} />
+
+    <meta name="twitter:description" content={description} />
+
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <meta name="twitter:image:alt" content={socialImageAlt} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(businessSchema)}></script>
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+import Icon from "./Icon.astro";
+
+import { contact } from "../../data/contact";
+
+interface Props {
+  label: string;
+  href?: string;
+  variant?: "primary" | "light";
+  class?: string;
+}
+
+const {
+  label,
+  href = contact.whatsapp.quoteURL,
+  variant = "primary",
+  class: className,
+} = Astro.props;
+---
+
+<a
+  class:list={["button", `button-${variant}`, className]}
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <Icon name="whatsapp" size={20} />
+  <span>{label}</span>
+  <span class="sr-only">(WhatsApp, abre en una pestaña nueva)</span>
+</a>

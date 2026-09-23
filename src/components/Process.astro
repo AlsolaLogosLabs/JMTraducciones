@@ -1,0 +1,40 @@
+---
+import SectionHeader from "./ui/SectionHeader.astro";
+import StepCard from "./ui/StepCard.astro";
+
+import { processSteps } from "../data/process";
+---
+
+<section id="como-funciona" class="section section-alt" aria-labelledby="process-title">
+  <div class="container">
+    <SectionHeader
+      label="Cómo funciona"
+      title="Solicitar una traducción es sencillo"
+      titleId="process-title"
+      description="Cuatro pasos desde el primer mensaje hasta recibir tu traducción certificada."
+    />
+
+    <ol class="process-steps">
+      {processSteps.map((step, index) => (
+        <li>
+          <StepCard index={index + 1} title={step.title} description={step.description} />
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process-steps {
+    margin: 0;
+    padding: 0;
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+
+    gap: 1.5rem;
+
+    list-style: none;
+  }
+</style>

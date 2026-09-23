@@ -1,0 +1,525 @@
+---
+import WhatsAppButton from "./ui/WhatsAppButton.astro";
+
+import { navigationItems } from "../data/navigation";
+import { profile } from "../data/profile";
+
+const baseURL = import.meta.env.BASE_URL;
+---
+
+<header class="header">
+  <a class="skip-link" href="#main-content">
+    {" "}
+    Saltar al contenido{" "}
+  </a>
+
+  <nav class="navbar container" aria-label="Navegación principal">
+    <a class="logo" href={baseURL} aria-label={`${profile.brand}, ir al inicio`}>
+      <span class="logo-mark" aria-hidden="true">
+        JM
+      </span>
+      <span class="logo-text" aria-hidden="true">
+        Traducciones
+      </span>
+    </a>
+
+    <div class="desktop-navigation">
+      {navigationItems.map((item) => (
+        <a href={`#${item.section}`} data-nav-section={item.section}>
+          {item.label}
+        </a>
+      ))}
+    </div>
+
+    <WhatsAppButton label="Cotizar" class="header-cta" />
+
+    <details class="mobile-menu">
+      <summary class="menu-toggle">
+        <span> Menú </span>
+
+        <span class="menu-icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </summary>
+
+      <div class="mobile-navigation">
+        {navigationItems.map((item) => (
+          <a href={`#${item.section}`} data-nav-section={item.section}>
+            {item.label}
+          </a>
+        ))}
+
+        <WhatsAppButton label="Cotizar por WhatsApp" class="mobile-cta" />
+      </div>
+    </details>
+  </nav>
+</header>
+
+<script>
+  const mobileMenu = document.querySelector(".mobile-menu");
+
+  const navigationLinks = document.querySelectorAll<HTMLAnchorElement>("a[data-nav-section]");
+
+  // Las secciones observadas se derivan de los propios enlaces,
+  // así la navegación y el scroll spy no pueden desincronizarse.
+  const sectionIds = [
+    ...new Set(Array.from(navigationLinks, (link) => link.dataset.navSection ?? "")),
+  ].filter(Boolean);
+
+  const sections = sectionIds
+    .map((sectionId) => document.getElementById(sectionId))
+    .filter((section): section is HTMLElement => section instanceof HTMLElement);
+
+  const lastSectionId = sectionIds.at(-1) ?? null;
+
+  // Marca visualmente la sección activa.
+  const setActiveSection = (sectionId: string | null) => {
+    navigationLinks.forEach((link) => {
+      const isActive = sectionId !== null && link.dataset.navSection === sectionId;
+
+      link.classList.toggle("is-active", isActive);
+
+      if (isActive) {
+        link.setAttribute("aria-current", "location");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  // Detecta si el usuario llegó
+  // prácticamente al final del documento.
+  const isAtPageBottom = () =>
+    window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+
+  // Determina qué sección atraviesa
+  // una línea virtual dentro del viewport.
+  const updateActiveSection = () => {
+    if (isAtPageBottom()) {
+      setActiveSection(lastSectionId);
+
+      return;
+    }
+
+    const viewportMarker = window.innerHeight * 0.32;
+
+    const activeSection = sections.find((section) => {
+      const rect = section.getBoundingClientRect();
+
+      return rect.top <= viewportMarker && rect.bottom > viewportMarker;
+    });
+
+    setActiveSection(activeSection ? activeSection.id : null);
+  };
+
+  let updateScheduled = false;
+
+  const scheduleActiveUpdate = () => {
+    if (updateScheduled) {
+      return;
+    }
+
+    updateScheduled = true;
+
+    window.requestAnimationFrame(() => {
+      updateActiveSection();
+
+      updateScheduled = false;
+    });
+  };
+
+  const closeMobileMenu = () => {
+    if (mobileMenu instanceof HTMLDetailsElement) {
+      mobileMenu.open = false;
+    }
+  };
+
+  // Cierra el menú móvil y actualiza
+  // inmediatamente el enlace seleccionado.
+  navigationLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      const sectionId = link.dataset.navSection;
+
+      if (sectionId) {
+        setActiveSection(sectionId);
+      }
+
+      closeMobileMenu();
+    });
+  });
+
+  // El CTA del menú abre WhatsApp en otra pestaña; el menú se cierra igualmente.
+  mobileMenu?.querySelector(".mobile-cta")?.addEventListener("click", closeMobileMenu);
+
+  // Permite cerrar el menú móvil
+  // utilizando la tecla Escape.
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !(mobileMenu instanceof HTMLDetailsElement) || !mobileMenu.open) {
+      return;
+    }
+
+    mobileMenu.open = false;
+
+    const menuToggle = mobileMenu.querySelector("summary");
+
+    if (menuToggle instanceof HTMLElement) {
+      menuToggle.focus();
+    }
+  });
+
+  // Cierra el menú si el usuario
+  // pulsa fuera de él.
+  document.addEventListener("click", (event) => {
+    if (
+      !(mobileMenu instanceof HTMLDetailsElement) ||
+      !mobileMenu.open ||
+      !(event.target instanceof Node) ||
+      mobileMenu.contains(event.target)
+    ) {
+      return;
+    }
+
+    mobileMenu.open = false;
+  });
+
+  window.addEventListener("scroll", scheduleActiveUpdate, {
+    passive: true,
+  });
+
+  window.addEventListener("resize", scheduleActiveUpdate);
+
+  scheduleActiveUpdate();
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    border-bottom: 1px solid var(--color-border);
+
+    background: rgb(250 247 241 / 0.94);
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .navbar {
+    position: relative;
+
+    min-height: var(--header-height);
+
+    display: flex;
+    align-items: center;
+
+    gap: 1.5rem;
+  }
+
+  .logo {
+    min-height: 44px;
+
+    margin-right: auto;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 0.65rem;
+
+    text-decoration: none;
+  }
+
+  .logo-mark {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--color-text-inverse);
+
+    background: var(--color-primary);
+
+    box-shadow: inset 0 -3px 0 var(--color-accent);
+
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
+  }
+
+  .logo-text {
+    color: var(--color-primary);
+
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .desktop-navigation {
+    display: flex;
+    align-items: center;
+
+    gap: 0.15rem;
+  }
+
+  .desktop-navigation a {
+    min-height: 44px;
+    position: relative;
+
+    padding: 0.6rem 0.75rem;
+
+    display: inline-flex;
+    align-items: center;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+    font-weight: 550;
+
+    white-space: nowrap;
+
+    text-decoration: none;
+
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .desktop-navigation a:hover {
+    color: var(--color-text);
+
+    background: var(--color-primary-soft);
+  }
+
+  .desktop-navigation a.is-active {
+    color: var(--color-primary);
+  }
+
+  .desktop-navigation a.is-active::after {
+    content: "";
+
+    position: absolute;
+
+    right: 0.75rem;
+    bottom: 5px;
+    left: 0.75rem;
+
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: var(--color-accent);
+  }
+
+  .header :global(.header-cta) {
+    min-height: 44px;
+
+    padding: 0.6rem 1rem;
+
+    font-size: 0.95rem;
+  }
+
+  .mobile-menu {
+    display: none;
+
+    position: relative;
+  }
+
+  .menu-toggle {
+    min-height: 44px;
+
+    padding: 0.55rem 0.75rem;
+
+    display: flex;
+    align-items: center;
+
+    gap: 0.65rem;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: var(--radius-sm);
+
+    color: var(--color-text);
+
+    background: var(--color-surface);
+
+    font-size: 0.95rem;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    user-select: none;
+  }
+
+  .menu-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-toggle::marker {
+    content: "";
+  }
+
+  .menu-icon {
+    width: 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+  }
+
+  .menu-icon span {
+    width: 100%;
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: currentColor;
+
+    transition:
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
+  }
+
+  .mobile-menu[open] .menu-icon span:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+  }
+
+  .mobile-menu[open] .menu-icon span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu[open] .menu-icon span:nth-child(3) {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+
+  .mobile-navigation {
+    position: absolute;
+
+    top: calc(100% + 0.75rem);
+    right: 0;
+
+    width: min(290px, calc(100vw - 2rem));
+
+    padding: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface);
+
+    box-shadow: 0 16px 40px rgb(16 54 56 / 0.16);
+  }
+
+  .mobile-navigation a[data-nav-section] {
+    min-height: 48px;
+
+    padding: 0.75rem 1rem;
+
+    display: flex;
+    align-items: center;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--color-text-muted);
+
+    font-weight: 600;
+
+    text-decoration: none;
+  }
+
+  .mobile-navigation a[data-nav-section]:hover {
+    color: var(--color-text);
+
+    background: var(--color-primary-soft);
+  }
+
+  .mobile-navigation a.is-active {
+    color: var(--color-primary);
+
+    background: var(--color-primary-soft);
+
+    box-shadow: inset 3px 0 0 var(--color-accent);
+  }
+
+  .mobile-navigation :global(.mobile-cta) {
+    margin-top: 0.5rem;
+  }
+
+  .skip-link {
+    position: fixed;
+
+    top: 0.75rem;
+    left: 0.75rem;
+
+    z-index: 1000;
+
+    padding: 0.65rem 1rem;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--color-text-inverse);
+    background: var(--color-primary);
+
+    font-weight: 650;
+
+    text-decoration: none;
+
+    transform: translateY(-200%);
+
+    transition: transform var(--transition-fast);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  :global(section[id]) {
+    scroll-margin-top: 90px;
+  }
+
+  @media (max-width: 1080px) {
+    .navbar {
+      gap: 0.75rem;
+    }
+
+    .desktop-navigation,
+    .header :global(.header-cta) {
+      display: none;
+    }
+
+    .mobile-menu {
+      display: block;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .navbar {
+      --header-height: 64px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+    }
+  }
+</style>

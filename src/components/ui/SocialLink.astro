@@ -1,0 +1,154 @@
+---
+import Icon from "./Icon.astro";
+
+import type { IconName } from "./icon-names";
+
+interface Props {
+  label: string;
+  value: string;
+  href: string;
+  icon: IconName;
+  external?: boolean;
+}
+
+const { label, value, href, icon, external = true } = Astro.props;
+---
+
+<a
+  class="social-link"
+  href={href}
+  target={external ? "_blank" : undefined}
+  rel={external ? "noopener noreferrer" : undefined}
+  aria-label={external ? `${label}: ${value}. Abre en una pestaña nueva.` : `${label}: ${value}.`}
+>
+  <span class="social-icon">
+    <Icon name={icon} size={22} />
+  </span>
+
+  <span class="social-content">
+    <span class="social-label">{label}</span>
+
+    <strong>{value}</strong>
+  </span>
+
+  <svg
+    class="social-arrow"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M7 17 17 7"></path>
+    <path d="M7 7h10v10"></path>
+  </svg>
+</a>
+
+<style>
+  .social-link {
+    min-height: 76px;
+
+    padding: 1rem 1.15rem;
+
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+
+    border: 1px solid var(--color-border-inverse);
+
+    border-radius: var(--radius-md);
+
+    color: var(--color-text-inverse);
+
+    background: rgb(255 255 255 / 0.04);
+
+    text-decoration: none;
+
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .social-icon {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    color: var(--color-accent);
+
+    background: rgb(198 161 91 / 0.12);
+  }
+
+  .social-content {
+    min-width: 0;
+
+    flex: 1;
+
+    display: grid;
+
+    gap: 0.15rem;
+  }
+
+  .social-label {
+    color: var(--color-text-inverse-subtle);
+
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .social-content strong {
+    font-size: 1rem;
+
+    overflow-wrap: anywhere;
+  }
+
+  .social-arrow {
+    width: 20px;
+    height: 20px;
+
+    flex: 0 0 20px;
+
+    color: var(--color-accent);
+
+    transition: transform var(--transition-fast);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .social-link:hover {
+      transform: translateY(-2px);
+
+      border-color: rgb(198 161 91 / 0.55);
+
+      background: rgb(255 255 255 / 0.07);
+    }
+
+    .social-link:hover .social-arrow {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .social-link,
+    .social-arrow {
+      transition: none;
+    }
+
+    .social-link:hover,
+    .social-link:hover .social-arrow {
+      transform: none;
+    }
+  }
+</style>

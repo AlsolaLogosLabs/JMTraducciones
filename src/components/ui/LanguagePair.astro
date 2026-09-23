@@ -1,0 +1,33 @@
+---
+import { profile } from "../../data/profile";
+
+const { source, target } = profile.languages;
+
+// Se muestra "Inglés ↔ Español" y se anuncia "Inglés y Español" a lectores de pantalla.
+const accessibleLabel = `${source} y ${target}`;
+---
+
+<span class="language-pair">
+  <span class="sr-only">{accessibleLabel}</span>
+  <span aria-hidden="true">
+    {source}
+    <span class="arrow">↔</span>
+    {target}
+  </span>
+</span>
+
+<style>
+  .language-pair {
+    white-space: nowrap;
+  }
+
+  .arrow {
+    margin-inline: 0.3em;
+
+    color: var(--color-accent);
+
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 400;
+  }
+</style>
