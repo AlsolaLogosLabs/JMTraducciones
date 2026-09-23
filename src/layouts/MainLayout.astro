@@ -38,6 +38,9 @@ const baseURL = import.meta.env.BASE_URL;
 
 const homeURL = getAbsoluteHomeURL(locale);
 
+// Identificadores estables, comunes a todos los idiomas: ES y EN describen la misma entidad.
+const schemaBaseURL = getAbsoluteHomeURL(defaultLocale);
+
 const ogImageURL = new URL(`${baseURL}${localeSettings[locale].ogImage}`, Astro.site);
 
 const socialImageAlt = t.seo.socialImageAlt;
@@ -50,6 +53,8 @@ const businessSchema = {
   "@context": "https://schema.org",
 
   "@type": "ProfessionalService",
+
+  "@id": `${schemaBaseURL}#business`,
 
   name: profile.brand,
 
@@ -79,6 +84,8 @@ const businessSchema = {
 
   member: {
     "@type": "Person",
+
+    "@id": `${schemaBaseURL}#translator`,
 
     name: profile.name,
 
