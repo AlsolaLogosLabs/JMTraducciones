@@ -1,0 +1,207 @@
+---
+import SectionHeader from "./ui/SectionHeader.astro";
+import WhatsAppButton from "./ui/WhatsAppButton.astro";
+
+import { faqItems } from "../data/faq";
+import { defaultLocale, type Locale } from "../i18n/config";
+import { getContent } from "../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
+
+// En otros idiomas, la denominación legal original se marca con lang="es" dentro de la respuesta.
+const originalTerm = t.profile.roleOriginal;
+
+const splitAnswer = (answer: string) => (originalTerm ? answer.split(originalTerm) : [answer]);
+---
+
+<section id="faq" class="section section-alt" aria-labelledby="faq-title">
+  <div class="container">
+    <SectionHeader
+      label={t.faq.label}
+      title={t.faq.title}
+      titleId="faq-title"
+      description={t.faq.description}
+    />
+
+    <!-- Acordeón nativo: cada pregunta se abre de forma independiente, sin JavaScript. -->
+    <div class="faq-list">
+      {faqItems.map((id) => {
+        const item = t.faq.items[id];
+
+        return (
+          <details class="faq-item">
+            <summary>
+              <span class="faq-question">{item.question}</span>
+              <span class="faq-marker" aria-hidden="true" />
+            </summary>
+
+            <p class="faq-answer">
+              {splitAnswer(item.answer).map((part, index) => (
+                <>
+                  {index > 0 && <span lang="es">{originalTerm}</span>}
+                  {part}
+                </>
+              ))}
+            </p>
+          </details>
+        );
+      })}
+    </div>
+
+    <div class="faq-cta">
+      <p class="cta-title">{t.faq.ctaTitle}</p>
+
+      <WhatsAppButton locale={locale} label={t.faq.ctaButton} variant="secondary" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-list {
+    max-width: 860px;
+
+    border-top: 1px solid var(--color-border-strong);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  summary {
+    min-height: 44px;
+
+    padding-block: 1.1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    list-style: none;
+
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::marker {
+    content: "";
+  }
+
+  .faq-question {
+    color: var(--color-text);
+
+    font-size: 1.05rem;
+    font-weight: 650;
+    line-height: 1.45;
+
+    transition: color var(--transition-fast);
+  }
+
+  summary:hover .faq-question {
+    color: var(--color-primary);
+  }
+
+  /* Indicador + / − dibujado con CSS; la forma cambia, no solo el color. */
+  .faq-marker {
+    position: relative;
+
+    width: 28px;
+    height: 28px;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--color-primary-border);
+
+    border-radius: 50%;
+
+    color: var(--color-primary);
+
+    background: var(--color-surface);
+  }
+
+  .faq-marker::before,
+  .faq-marker::after {
+    content: "";
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 12px;
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: currentColor;
+
+    transform: translate(-50%, -50%);
+
+    transition: transform var(--transition-fast);
+  }
+
+  .faq-marker::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .faq-item[open] .faq-marker {
+    border-color: var(--color-primary);
+  }
+
+  .faq-item[open] .faq-marker::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  .faq-answer {
+    max-width: 68ch;
+
+    margin: 0;
+    padding: 0 3rem 1.35rem 0;
+
+    color: var(--color-text-muted);
+
+    line-height: 1.7;
+  }
+
+  .faq-cta {
+    max-width: 860px;
+
+    margin-top: 2rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem 2rem;
+  }
+
+  .cta-title {
+    margin: 0;
+
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 600px) {
+    .faq-answer {
+      padding-right: 0;
+    }
+
+    .faq-cta :global(.button) {
+      width: 100%;
+    }
+  }
+</style>
