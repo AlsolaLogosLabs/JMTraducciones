@@ -94,11 +94,20 @@ const baseURL = import.meta.env.BASE_URL;
   const isAtPageBottom = () =>
     window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
 
+  // Sección elegida desde el menú. En pantallas altas, secciones cortas
+  // cercanas al final (p. ej. Express) llevan el scroll al fondo del documento;
+  // se respeta la elección hasta que el usuario vuelva a desplazarse por su cuenta.
+  let navigationTarget: string | null = null;
+
+  const clearNavigationTarget = () => {
+    navigationTarget = null;
+  };
+
   // Determina qué sección atraviesa
   // una línea virtual dentro del viewport.
   const updateActiveSection = () => {
     if (isAtPageBottom()) {
-      setActiveSection(lastSectionId);
+      setActiveSection(navigationTarget ?? lastSectionId);
 
       return;
     }
@@ -143,11 +152,18 @@ const baseURL = import.meta.env.BASE_URL;
       const sectionId = link.dataset.navSection;
 
       if (sectionId) {
+        navigationTarget = sectionId;
+
         setActiveSection(sectionId);
       }
 
       closeMobileMenu();
     });
+  });
+
+  // Cualquier desplazamiento iniciado por el usuario anula el destino del menú.
+  ["wheel", "touchmove", "keydown"].forEach((eventName) => {
+    window.addEventListener(eventName, clearNavigationTarget, { passive: true });
   });
 
   // El CTA del menú abre WhatsApp en otra pestaña; el menú se cierra igualmente.
@@ -211,7 +227,8 @@ const baseURL = import.meta.env.BASE_URL;
   .navbar {
     position: relative;
 
-    min-height: var(--header-height);
+    /* --header-height es la altura total del header, incluido su borde inferior. */
+    min-height: calc(var(--header-height) - 1px);
 
     display: flex;
     align-items: center;
@@ -492,10 +509,6 @@ const baseURL = import.meta.env.BASE_URL;
     transform: translateY(0);
   }
 
-  :global(section[id]) {
-    scroll-margin-top: 90px;
-  }
-
   @media (max-width: 1080px) {
     .navbar {
       gap: 0.75rem;
@@ -508,12 +521,6 @@ const baseURL = import.meta.env.BASE_URL;
 
     .mobile-menu {
       display: block;
-    }
-  }
-
-  @media (max-width: 960px) {
-    .navbar {
-      --header-height: 64px;
     }
   }
 

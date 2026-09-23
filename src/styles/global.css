@@ -55,6 +55,7 @@
   --shadow-lg: 0 24px 56px rgb(16 54 56 / 0.14);
   --shadow-drop: 0 10px 18px rgb(16 54 56 / 0.22);
 
+  /* Altura total del header sticky. Es la única referencia para el offset de las anclas. */
   --header-height: 72px;
 
   --transition-fast: 180ms ease;
@@ -66,9 +67,10 @@
   box-sizing: border-box;
 }
 
+/* Las anclas aterrizan justo bajo el header; el aire visual lo aporta el padding de cada sección. */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-height) + 1rem);
+  scroll-padding-top: var(--header-height);
 }
 
 body {
@@ -277,6 +279,12 @@ button:focus-visible,
 summary:focus-visible {
   outline: 3px solid var(--color-focus-ring);
   outline-offset: 3px;
+}
+
+@media (max-width: 960px) {
+  :root {
+    --header-height: 64px;
+  }
 }
 
 @media (max-width: 700px) {
