@@ -13,6 +13,8 @@ interface LocaleSettings {
   // Abreviatura visible en el selector.
   shortName: string;
   ogLocale: string;
+  // Imagen social 1200 × 630 en public/, con los textos en este idioma.
+  ogImage: string;
 }
 
 export const localeSettings: Record<Locale, LocaleSettings> = {
@@ -20,12 +22,14 @@ export const localeSettings: Record<Locale, LocaleSettings> = {
     name: "Español",
     shortName: "ES",
     ogLocale: "es_PA",
+    ogImage: "og-image-es.png",
   },
 
   en: {
     name: "English",
     shortName: "EN",
     ogLocale: "en_PA",
+    ogImage: "og-image-en.png",
   },
 };
 

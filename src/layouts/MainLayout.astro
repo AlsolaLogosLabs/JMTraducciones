@@ -38,7 +38,7 @@ const baseURL = import.meta.env.BASE_URL;
 
 const homeURL = getAbsoluteHomeURL(locale);
 
-const ogImageURL = new URL(`${baseURL}og-image.png`, Astro.site);
+const ogImageURL = new URL(`${baseURL}${localeSettings[locale].ogImage}`, Astro.site);
 
 const socialImageAlt = t.seo.socialImageAlt;
 

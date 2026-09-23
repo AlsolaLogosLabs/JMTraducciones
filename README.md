@@ -51,7 +51,8 @@ JMTraducciones/
 │   ├── apple-touch-icon.png
 │   ├── favicon.ico
 │   ├── favicon.svg
-│   └── og-image.png
+│   ├── og-image-en.png
+│   └── og-image-es.png
 │
 ├── src/
 │   ├── components/
@@ -237,7 +238,7 @@ Todos los recursos internos se construyen con `import.meta.env.BASE_URL`.
 - `hreflang` `es`, `en` y `x-default` (español) en las páginas principales.
 - `<html lang>`, `og:locale` (`es_PA` / `en_PA`) y `og:locale:alternate` según el idioma.
 - Favicon SVG + ICO y `apple-touch-icon.png` (180 × 180) con la marca JM.
-- Open Graph y Twitter Card con imagen social propia (`og-image.png`, 1200 × 630).
+- Open Graph y Twitter Card con imagen social por idioma (1200 × 630, mismo diseño): `public/og-image-es.png` y `public/og-image-en.png`. `MainLayout` elige la imagen según el `locale` (`ogImage` en `src/i18n/config.ts`) y el texto alternativo sale de `content.ts`.
 - Datos estructurados JSON-LD de tipo `ProfessionalService`, localizados por idioma.
 - Sitemap generado por `@astrojs/sitemap` con ambas versiones.
 - Página 404 con `noindex`, sin canonical ni hreflang.
