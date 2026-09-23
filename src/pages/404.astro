@@ -1,0 +1,192 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+import Footer from "../components/Footer.astro";
+import BrandLogo from "../components/ui/BrandLogo.astro";
+import WhatsAppButton from "../components/ui/WhatsAppButton.astro";
+
+import { profile } from "../data/profile";
+
+// Con base "/JMTraducciones" y trailingSlash "always", BASE_URL es "/JMTraducciones/".
+const homeURL = import.meta.env.BASE_URL;
+---
+
+<MainLayout
+  title={`Página no encontrada | ${profile.brand}`}
+  description="La página que buscas no está disponible. Regresa al inicio de JM Traducciones o solicita una cotización por WhatsApp."
+  noindex
+>
+  <div class="page">
+    <!-- Cabecera reducida: la navegación por secciones solo existe en la landing. -->
+    <header class="simple-header">
+      <div class="simple-header-content container">
+        <BrandLogo />
+      </div>
+    </header>
+
+    <main id="main-content" class="not-found">
+      <div class="container">
+        <div class="not-found-card">
+          <p class="not-found-code" aria-hidden="true">
+            404
+          </p>
+
+          <h1 class="not-found-title">
+            Página no encontrada <span class="sr-only">(error 404)</span>
+          </h1>
+
+          <p class="not-found-text">
+            La página que buscas no existe o pudo haber cambiado de dirección.
+          </p>
+
+          <div class="not-found-actions">
+            <a class="button button-primary" href={homeURL}>
+              Volver al inicio
+            </a>
+
+            <WhatsAppButton label="Cotizar por WhatsApp" variant="secondary" />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</MainLayout>
+
+<style>
+  /* Header, contenido y footer ocupan al menos toda la ventana. */
+  .page {
+    min-height: 100vh;
+    min-height: 100svh;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .simple-header {
+    border-bottom: 1px solid var(--color-border);
+
+    background: var(--color-header-background);
+  }
+
+  .simple-header-content {
+    min-height: calc(var(--header-height) - 1px);
+
+    display: flex;
+    align-items: center;
+  }
+
+  .not-found {
+    flex: 1;
+
+    padding-block: clamp(3rem, 8vw, 5rem);
+
+    display: grid;
+    align-items: center;
+  }
+
+  .not-found-card {
+    max-width: 560px;
+
+    margin-inline: auto;
+
+    padding: clamp(2rem, 6vw, 3rem) clamp(1.5rem, 6vw, 3rem);
+
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+
+    border-radius: var(--radius-lg);
+
+    background: var(--color-surface);
+
+    box-shadow: var(--shadow-md);
+
+    text-align: center;
+  }
+
+  .not-found-code {
+    margin: 0;
+
+    color: var(--color-primary);
+
+    font-family: var(--font-serif);
+    font-size: clamp(3.25rem, 9vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1;
+
+    letter-spacing: 0.04em;
+  }
+
+  /* Filete dorado bajo el código, como en un sello documental. */
+  .not-found-code::after {
+    content: "";
+
+    width: 3rem;
+    height: 2px;
+
+    margin: 1.25rem auto 0;
+
+    display: block;
+
+    border-radius: 999px;
+
+    background: var(--color-accent);
+  }
+
+  .not-found-title {
+    margin: 1.25rem 0 0;
+
+    color: var(--color-text);
+
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.2;
+
+    letter-spacing: -0.01em;
+  }
+
+  .not-found-text {
+    margin: 0.85rem auto 0;
+
+    max-width: 40ch;
+
+    color: var(--color-text-muted);
+
+    font-size: clamp(1rem, 1.6vw, 1.08rem);
+    line-height: 1.7;
+  }
+
+  .not-found-actions {
+    margin-top: 2rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    gap: 0.75rem;
+  }
+
+  /* Esta página no incluye el botón flotante de WhatsApp: no hace falta reservarle espacio. */
+  @media (max-width: 1080px) {
+    .page > :global(.footer) {
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .not-found-actions {
+      flex-direction: column;
+    }
+
+    .not-found-card {
+      padding-inline: 1rem;
+    }
+
+    /* Botones a todo el ancho; menos padding lateral para que el texto quepa en una línea a 320 px. */
+    .not-found-actions > :global(.button) {
+      width: 100%;
+
+      padding-inline: 1rem;
+    }
+  }
+</style>
