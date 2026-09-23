@@ -11,25 +11,25 @@ import { contact } from "../data/contact";
   rel="noopener noreferrer"
   aria-label="Cotizar por WhatsApp. Abre en una pestaña nueva."
 >
-  <Icon name="whatsapp" size={28} />
+  <Icon name="whatsapp" size={26} />
 </a>
 
 <style>
   .floating-whatsapp {
     position: fixed;
 
-    right: max(1rem, env(safe-area-inset-right));
-    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: calc(1rem + env(safe-area-inset-right));
+    bottom: calc(1rem + env(safe-area-inset-bottom));
 
     z-index: 90;
 
-    width: 58px;
-    height: 58px;
+    width: 56px;
+    height: 56px;
 
     display: none;
     place-items: center;
 
-    border: 2px solid var(--color-accent);
+    border: 2px solid var(--color-background);
 
     border-radius: 50%;
 
@@ -37,13 +37,23 @@ import { contact } from "../data/contact";
 
     background: var(--color-primary);
 
-    box-shadow: 0 12px 30px rgb(16 54 56 / 0.3);
+    box-shadow: var(--shadow-lg);
 
-    --color-focus-ring: var(--color-accent);
+    transition: background-color var(--transition-fast);
   }
 
   .floating-whatsapp:hover {
     background: var(--color-primary-hover);
+  }
+
+  /* Anillo doble: visible tanto sobre secciones claras como sobre las oscuras. */
+  .floating-whatsapp:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+
+    box-shadow:
+      0 0 0 7px var(--color-primary-hover),
+      var(--shadow-lg);
   }
 
   /* En escritorio el Header ya muestra el CTA de WhatsApp. */

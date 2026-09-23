@@ -5,15 +5,18 @@ import Seal from "./ui/Seal.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
 import { profile } from "../data/profile";
+
+// Datos de confianza complementarios: no repiten lo que ya dicen el título y el bloque profesional.
+const trustItems = [
+  "Cotización antes de iniciar",
+  "Servicio express bajo consulta",
+  `Reconocimiento del ${profile.authority}`,
+];
 ---
 
 <section id="inicio" class="hero" aria-labelledby="hero-title">
   <div class="hero-grid container">
     <div class="hero-content">
-      <p class="eyebrow">
-        {profile.brand} · {profile.location}
-      </p>
-
       <h1 id="hero-title">
         Traducciones certificadas
         <span class="title-languages">
@@ -22,47 +25,53 @@ import { profile } from "../data/profile";
         en {profile.location}
       </h1>
 
-      <p class="description">{profile.headline}</p>
+      <p class="description">{profile.serviceSummary}</p>
 
-      <p class="translator">
-        <strong>{profile.name}</strong>
-        <span>{profile.role}</span>
-      </p>
+      <div class="translator">
+        <p class="translator-name">{profile.name}</p>
+
+        <p class="translator-role">
+          {profile.role}
+          <span class="translator-divider" aria-hidden="true">
+            ·
+          </span>
+          Idoneidad desde {profile.authorizedSince}
+        </p>
+      </div>
 
       <div class="actions">
         <WhatsAppButton label="Cotizar por WhatsApp" />
 
         <a class="button button-secondary" href="#servicios">
-          {" "}
-          Ver servicios{" "}
+          Ver servicios
         </a>
       </div>
 
-      <ul class="trust" aria-label="Credenciales principales">
-        <li>
-          <Icon name="check" size={18} />
-          {profile.role}
-        </li>
-
-        <li>
-          <Icon name="check" size={18} />
-          <LanguagePair />
-        </li>
-
-        <li>
-          <Icon name="check" size={18} />
-          Idoneidad desde {profile.authorizedSince}
-        </li>
+      <ul class="trust" aria-label="Información del servicio">
+        {trustItems.map((item) => (
+          <li>
+            <Icon name="check" size={18} />
+            {item}
+          </li>
+        ))}
       </ul>
     </div>
 
     <div class="hero-visual" aria-hidden="true">
-      <div class="sheet sheet-back"></div>
+      <div class="sheet sheet-source">
+        <span class="sheet-tag">EN</span>
 
-      <div class="sheet sheet-front">
-        <p class="sheet-label">Traducción certificada</p>
+        <div class="sheet-lines">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
 
-        <p class="sheet-languages">EN ↔ ES</p>
+      <div class="sheet sheet-target">
+        <span class="sheet-tag sheet-tag-target">ES</span>
 
         <div class="sheet-lines">
           <span></span>
@@ -71,16 +80,14 @@ import { profile } from "../data/profile";
           <span></span>
           <span></span>
           <span></span>
-        </div>
-
-        <div class="sheet-signature">
           <span></span>
-          <p>{profile.role}</p>
         </div>
+      </div>
 
-        <div class="sheet-seal">
-          <Seal size={112} />
-        </div>
+      <span class="visual-arrow">↔</span>
+
+      <div class="visual-seal">
+        <Seal size={104} decorative />
       </div>
     </div>
   </div>
@@ -91,7 +98,7 @@ import { profile } from "../data/profile";
     position: relative;
 
     /* Ocupa la pantalla, con un tope para monitores muy altos. */
-    min-height: min(calc(100svh - var(--header-height)), 820px);
+    min-height: min(calc(100svh - var(--header-height)), 760px);
 
     display: flex;
     align-items: center;
@@ -99,19 +106,18 @@ import { profile } from "../data/profile";
     overflow: hidden;
 
     background:
-      radial-gradient(circle at 88% 12%, rgb(198 161 91 / 0.14), transparent 34%),
-      radial-gradient(circle at 70% 90%, rgb(23 76 79 / 0.08), transparent 40%),
+      radial-gradient(circle at 90% 10%, var(--color-accent-tint), transparent 36%),
       var(--color-background);
   }
 
   .hero-grid {
-    padding-block: 5.5rem;
+    padding-block: clamp(3.5rem, 7vw, 5.5rem);
 
     display: grid;
 
     grid-template-columns:
-      minmax(0, 1.2fr)
-      minmax(300px, 0.8fr);
+      minmax(0, 1fr)
+      minmax(300px, 380px);
 
     gap: clamp(3rem, 6vw, 5rem);
 
@@ -120,43 +126,16 @@ import { profile } from "../data/profile";
 
   .hero-content {
     min-width: 0;
-  }
-
-  .eyebrow {
-    margin: 0 0 1.25rem;
-
-    display: inline-flex;
-    align-items: center;
-
-    gap: 0.6rem;
-
-    color: var(--color-accent-strong);
-
-    font-size: 0.85rem;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-  }
-
-  .eyebrow::before {
-    content: "";
-
-    width: 1.75rem;
-    height: 1px;
-
-    background: currentColor;
+    max-width: 660px;
   }
 
   h1 {
     margin: 0;
 
-    max-width: 720px;
-
     color: var(--color-primary-hover);
 
-    font-size: clamp(2.4rem, 6.2vw, 4.4rem);
-    line-height: 1.08;
+    font-size: clamp(2.25rem, 4.8vw, 3.5rem);
+    line-height: 1.1;
 
     letter-spacing: -0.02em;
   }
@@ -170,56 +149,59 @@ import { profile } from "../data/profile";
   }
 
   .description {
-    max-width: 620px;
+    max-width: 34rem;
 
-    margin: 1.75rem 0 0;
+    margin: 1.25rem 0 0;
 
     color: var(--color-text-muted);
 
-    font-size: 1.15rem;
-    line-height: 1.75;
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    line-height: 1.65;
   }
 
+  /* Respaldo profesional: quién firma las traducciones. */
   .translator {
-    margin: 1.5rem 0 0;
+    margin-top: 1.75rem;
     padding-left: 1rem;
-
-    display: grid;
-
-    gap: 0.1rem;
 
     border-left: 2px solid var(--color-accent);
   }
 
-  .translator strong {
+  .translator p {
+    margin: 0;
+  }
+
+  .translator-name {
     font-weight: 650;
   }
 
-  .translator span {
+  .translator-role {
     color: var(--color-text-muted);
 
     font-size: 0.95rem;
   }
 
+  .translator-divider {
+    margin-inline: 0.35rem;
+  }
+
   .actions {
-    margin-top: 2.25rem;
+    margin-top: 2rem;
 
     display: flex;
     flex-wrap: wrap;
 
-    gap: 0.9rem;
+    gap: 0.75rem;
   }
 
   .trust {
-    margin: 2.5rem 0 0;
-    padding: 1.5rem 0 0;
+    margin: 2.25rem 0 0;
+    padding: 0;
 
     display: flex;
     flex-wrap: wrap;
 
-    gap: 0.75rem 1.75rem;
-
-    border-top: 1px solid var(--color-border);
+    gap: 0.5rem 1.5rem;
 
     list-style: none;
   }
@@ -228,11 +210,11 @@ import { profile } from "../data/profile";
     display: inline-flex;
     align-items: center;
 
-    gap: 0.5rem;
+    gap: 0.45rem;
 
-    color: var(--color-text);
+    color: var(--color-text-muted);
 
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
   }
 
@@ -240,20 +222,19 @@ import { profile } from "../data/profile";
     color: var(--color-accent-strong);
   }
 
-  /* Ilustración documental decorativa. */
+  /* Ilustración abstracta: documento de origen y traducción. No representa un documento real. */
   .hero-visual {
     position: relative;
 
-    max-width: 400px;
     width: 100%;
 
-    justify-self: center;
-
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 10 / 11;
   }
 
   .sheet {
     position: absolute;
+
+    padding: 1.5rem 1.35rem;
 
     border: 1px solid var(--color-border);
 
@@ -262,113 +243,113 @@ import { profile } from "../data/profile";
     background: var(--color-surface);
   }
 
-  .sheet-back {
-    inset: 1.5rem 2.5rem -0.5rem -1rem;
+  .sheet-source {
+    top: 0;
+    left: 0;
+
+    width: 62%;
+    height: 62%;
 
     background: var(--color-surface-alt);
 
-    transform: rotate(-5deg);
+    transform: rotate(-4deg);
   }
 
-  .sheet-front {
-    inset: 0 0 1.5rem 1rem;
+  .sheet-target {
+    right: 0;
+    bottom: 0;
 
-    padding: 2rem 1.75rem;
-
-    display: flex;
-    flex-direction: column;
-
-    box-shadow: 0 24px 60px rgb(16 54 56 / 0.14);
-  }
-
-  .sheet-front::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 0.55rem;
-
-    border: 1px solid var(--color-accent-soft);
-
-    border-radius: calc(var(--radius-md) - 3px);
-  }
-
-  .sheet-label {
-    margin: 0;
-
-    color: var(--color-accent-strong);
-
-    font-size: 0.7rem;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-  }
-
-  .sheet-languages {
-    margin: 0.4rem 0 0;
-
-    color: var(--color-primary);
-
-    font-family: var(--font-serif);
-    font-size: 1.6rem;
-    font-weight: 600;
-  }
-
-  .sheet-lines {
-    margin-top: 1.75rem;
-
-    display: grid;
-
-    gap: 0.85rem;
-  }
-
-  .sheet-lines span {
-    height: 7px;
-
-    border-radius: 999px;
-
-    background: var(--color-surface-alt);
-  }
-
-  .sheet-lines span:nth-child(2n) {
-    width: 86%;
-  }
-
-  .sheet-lines span:nth-child(3n) {
     width: 72%;
+    height: 74%;
+
+    box-shadow: var(--shadow-lg);
   }
 
-  .sheet-signature {
-    margin-top: auto;
+  .sheet-tag {
+    padding: 0.2rem 0.55rem;
 
-    width: 55%;
-  }
+    display: inline-block;
 
-  .sheet-signature span {
-    display: block;
+    border: 1px solid var(--color-border-strong);
 
-    height: 1px;
-
-    background: var(--color-border-strong);
-  }
-
-  .sheet-signature p {
-    margin: 0.45rem 0 0;
+    border-radius: var(--radius-sm);
 
     color: var(--color-text-muted);
 
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
   }
 
-  .sheet-seal {
+  .sheet-tag-target {
+    border-color: var(--color-primary);
+
+    color: var(--color-text-inverse);
+
+    background: var(--color-primary);
+  }
+
+  .sheet-lines {
+    margin-top: 1.35rem;
+
+    display: grid;
+
+    gap: 0.75rem;
+  }
+
+  .sheet-lines span {
+    height: 6px;
+
+    border-radius: 999px;
+
+    background: var(--color-border);
+  }
+
+  .sheet-target .sheet-lines span {
+    background: var(--color-primary-soft);
+  }
+
+  .sheet-lines span:nth-child(2n) {
+    width: 84%;
+  }
+
+  .sheet-lines span:nth-child(3n) {
+    width: 66%;
+  }
+
+  .visual-arrow {
     position: absolute;
 
-    right: -1.25rem;
-    bottom: -1.5rem;
+    top: 38%;
+    left: 20%;
 
-    filter: drop-shadow(0 10px 20px rgb(16 54 56 / 0.25));
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 50%;
+
+    color: var(--color-accent-strong);
+
+    background: var(--color-surface);
+
+    box-shadow: var(--shadow-md);
+
+    font-size: 1.35rem;
+  }
+
+  .visual-seal {
+    position: absolute;
+
+    right: -0.75rem;
+    bottom: -1.25rem;
+
+    filter: drop-shadow(var(--shadow-drop));
 
     transform: rotate(-8deg);
   }
@@ -382,22 +363,14 @@ import { profile } from "../data/profile";
       grid-template-columns: 1fr;
     }
 
+    /* En pantallas estrechas se prioriza la lectura del mensaje. */
     .hero-visual {
       display: none;
     }
   }
 
   @media (max-width: 600px) {
-    .hero-grid {
-      padding-block: 4rem;
-    }
-
-    .description {
-      font-size: 1.05rem;
-    }
-
     .actions {
-      align-items: stretch;
       flex-direction: column;
     }
 
@@ -408,7 +381,7 @@ import { profile } from "../data/profile";
 
   @media (max-width: 420px) {
     h1 {
-      font-size: 2.15rem;
+      font-size: 2.05rem;
     }
 
     /* En pantallas muy estrechas se permite partir el par de idiomas. */

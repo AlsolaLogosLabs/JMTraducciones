@@ -3,10 +3,12 @@ import { profile } from "../../data/profile";
 
 interface Props {
   size?: number;
+  // Usar cuando el mismo dato ya aparece como texto cerca del distintivo.
+  decorative?: boolean;
 }
 
 // Distintivo de diseño propio. No reproduce sellos, escudos ni logos oficiales.
-const { size = 140 } = Astro.props;
+const { size = 140, decorative = false } = Astro.props;
 ---
 
 <svg
@@ -14,8 +16,10 @@ const { size = 140 } = Astro.props;
   width={size}
   height={size}
   viewBox="0 0 140 140"
-  role="img"
-  aria-label={`Idoneidad desde ${profile.authorizedSince}`}
+  role={decorative ? undefined : "img"}
+  aria-label={decorative ? undefined : `Idoneidad desde ${profile.authorizedSince}`}
+  aria-hidden={decorative ? "true" : undefined}
+  focusable="false"
 >
   <circle class="seal-base" cx="70" cy="70" r="66"></circle>
   <circle class="seal-ring" cx="70" cy="70" r="58"></circle>

@@ -20,6 +20,8 @@ export const profile = {
   headline:
     "Traductor Público Autorizado con idoneidad desde 2018. Traducción certificada de documentos personales, académicos y técnicos.",
 
+  serviceSummary: "Traducción certificada de documentos personales, académicos y técnicos.",
+
   seo: {
     title: "JM Traducciones | Traductor Público Autorizado en Panamá",
 

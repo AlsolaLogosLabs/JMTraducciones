@@ -26,15 +26,63 @@ import { processSteps } from "../data/process";
 
 <style>
   .process-steps {
+    --step-size: 3rem;
+    --step-gap: 2rem;
+
     margin: 0;
     padding: 0;
 
     display: grid;
 
-    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 
-    gap: 1.5rem;
+    gap: var(--step-gap);
 
     list-style: none;
+  }
+
+  .process-steps li {
+    position: relative;
+  }
+
+  /* Conector sutil entre pasos consecutivos. */
+  .process-steps li:not(:last-child)::after {
+    content: "";
+
+    position: absolute;
+
+    top: calc(var(--step-size) / 2);
+    left: calc(var(--step-size) + 0.75rem);
+    right: calc(var(--step-gap) * -1 + 0.75rem);
+
+    height: 1px;
+
+    background: var(--color-border-strong);
+  }
+
+  @media (max-width: 800px) {
+    .process-steps {
+      grid-template-columns: 1fr;
+
+      gap: 0;
+    }
+
+    .process-steps li {
+      padding-bottom: 1.75rem;
+    }
+
+    .process-steps li:last-child {
+      padding-bottom: 0;
+    }
+
+    .process-steps li:not(:last-child)::after {
+      top: calc(var(--step-size) + 0.5rem);
+      bottom: 0.5rem;
+      left: calc(var(--step-size) / 2);
+      right: auto;
+
+      width: 1px;
+      height: auto;
+    }
   }
 </style>

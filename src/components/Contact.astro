@@ -21,55 +21,57 @@ import { contact } from "../data/contact";
       <WhatsAppButton label="Solicitar cotización por WhatsApp" variant="light" />
     </div>
 
-    <aside class="contact-panel" aria-labelledby="contact-channels-title">
-      <h3 id="contact-channels-title">Canales de contacto</h3>
+    <div class="contact-panel">
+      <h3 class="panel-title">Canales de contacto</h3>
 
-      <div class="contact-links">
-        <SocialLink
-          label={contact.whatsapp.label}
-          value={contact.whatsapp.display}
-          href={contact.whatsapp.quoteURL}
-          icon="whatsapp"
-        />
+      <ul class="contact-links">
+        <li>
+          <SocialLink
+            label={contact.whatsapp.label}
+            value={contact.whatsapp.display}
+            href={contact.whatsapp.quoteURL}
+            icon="whatsapp"
+            featured
+          />
+        </li>
 
-        <SocialLink
-          label={contact.email.label}
-          value={contact.email.address}
-          href={contact.email.url}
-          icon="mail"
-          external={false}
-        />
+        <li>
+          <SocialLink
+            label={contact.email.label}
+            value={contact.email.address}
+            href={contact.email.url}
+            icon="mail"
+            external={false}
+          />
+        </li>
 
-        <SocialLink
-          label={contact.instagram.label}
-          value={contact.instagram.handle}
-          href={contact.instagram.url}
-          icon="instagram"
-        />
-      </div>
-    </aside>
+        <li>
+          <SocialLink
+            label={contact.instagram.label}
+            value={contact.instagram.handle}
+            href={contact.instagram.url}
+            icon="instagram"
+          />
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
   .contact {
-    position: relative;
-
-    overflow: hidden;
-
     background:
-      radial-gradient(circle at 85% 15%, rgb(198 161 91 / 0.16), transparent 32%),
-      radial-gradient(circle at 10% 100%, rgb(23 76 79 / 0.9), transparent 45%), var(--color-dark);
+      radial-gradient(circle at 12% 100%, var(--color-primary), transparent 50%), var(--color-dark);
   }
 
   .contact-grid {
     display: grid;
 
     grid-template-columns:
-      minmax(0, 1.1fr)
-      minmax(300px, 0.9fr);
+      minmax(0, 1fr)
+      minmax(300px, 440px);
 
-    gap: clamp(3rem, 7vw, 6rem);
+    gap: clamp(2.5rem, 7vw, 6rem);
 
     align-items: center;
   }
@@ -79,42 +81,36 @@ import { contact } from "../data/contact";
   }
 
   .contact-main :global(.section-header) {
-    margin-bottom: 2.25rem;
+    margin-bottom: 2rem;
   }
 
-  .contact-panel {
-    min-width: 0;
+  .panel-title {
+    margin: 0 0 1rem;
 
-    padding: 1.5rem;
+    color: var(--color-text-inverse-muted);
 
-    border: 1px solid var(--color-border-inverse);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 700;
 
-    border-radius: var(--radius-lg);
-
-    background: rgb(16 54 56 / 0.6);
-
-    box-shadow: 0 24px 60px rgb(0 0 0 / 0.18);
-  }
-
-  .contact-panel h3 {
-    margin: 0 0 1.25rem;
-
-    color: var(--color-text-inverse);
-
-    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
   }
 
   .contact-links {
+    margin: 0;
+    padding: 0;
+
     display: grid;
 
     gap: 0.75rem;
+
+    list-style: none;
   }
 
   @media (max-width: 850px) {
     .contact-grid {
       grid-template-columns: 1fr;
-
-      gap: 2.5rem;
     }
 
     .contact-panel {
@@ -125,12 +121,6 @@ import { contact } from "../data/contact";
   @media (max-width: 600px) {
     .contact-main :global(.button) {
       width: 100%;
-    }
-  }
-
-  @media (max-width: 420px) {
-    .contact-panel {
-      padding: 1rem;
     }
   }
 </style>

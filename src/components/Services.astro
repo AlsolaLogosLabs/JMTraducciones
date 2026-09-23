@@ -27,9 +27,13 @@ import { serviceCategories, servicesSummary } from "../data/services";
     </div>
 
     <div class="services-cta">
-      <p>¿Tienes un documento para traducir? Envíalo y recibe una cotización.</p>
+      <div>
+        <p class="cta-title">¿Tienes un documento para traducir?</p>
 
-      <WhatsAppButton label="Cotizar por WhatsApp" />
+        <p class="cta-text">Envíalo por WhatsApp y recibe una cotización.</p>
+      </div>
+
+      <WhatsAppButton label="Enviar documento" variant="secondary" />
     </div>
   </div>
 </section>
@@ -38,14 +42,15 @@ import { serviceCategories, servicesSummary } from "../data/services";
   .services-grid {
     display: grid;
 
-    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
 
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
+  /* Transición comercial discreta: una fila, no un segundo Hero. */
   .services-cta {
-    margin-top: 3rem;
-    padding: 1.5rem 1.75rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
 
     display: flex;
     flex-wrap: wrap;
@@ -54,27 +59,27 @@ import { serviceCategories, servicesSummary } from "../data/services";
 
     gap: 1rem 2rem;
 
-    border: 1px solid var(--color-border);
-
-    border-radius: var(--radius-lg);
-
-    background: var(--color-background);
+    border-top: 1px solid var(--color-border);
   }
 
   .services-cta p {
     margin: 0;
+  }
 
+  .cta-title {
     font-family: var(--font-serif);
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 600;
-    line-height: 1.4;
+    line-height: 1.35;
+  }
+
+  .cta-text {
+    margin-top: 0.2rem;
+
+    color: var(--color-text-muted);
   }
 
   @media (max-width: 600px) {
-    .services-cta {
-      padding: 1.5rem;
-    }
-
     .services-cta :global(.button) {
       width: 100%;
     }

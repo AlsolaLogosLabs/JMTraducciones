@@ -5,11 +5,12 @@ export interface CredentialItem {
   value: string;
 }
 
+// Responde en orden: quién, para qué idiomas, desde cuándo y quién lo reconoce.
 export const credentials: CredentialItem[] = [
   {
-    label: "Condición",
+    label: "Profesional",
 
-    value: profile.role,
+    value: profile.name,
   },
 
   {
@@ -27,7 +28,7 @@ export const credentials: CredentialItem[] = [
   {
     label: "Reconocimiento",
 
-    value: `Emitido por el ${profile.authority}`,
+    value: profile.authority,
   },
 ];
 

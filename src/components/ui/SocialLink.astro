@@ -9,24 +9,37 @@ interface Props {
   href: string;
   icon: IconName;
   external?: boolean;
+  // Resalta el canal prioritario.
+  featured?: boolean;
 }
 
-const { label, value, href, icon, external = true } = Astro.props;
+const { label, value, href, icon, external = true, featured = false } = Astro.props;
+
+const accessibleLabel = [
+  `${label}: ${value}.`,
+  featured ? "Canal principal." : "",
+  external ? "Abre en una pestaña nueva." : "",
+]
+  .filter(Boolean)
+  .join(" ");
 ---
 
 <a
-  class="social-link"
+  class:list={["social-link", { "social-link-featured": featured }]}
   href={href}
   target={external ? "_blank" : undefined}
   rel={external ? "noopener noreferrer" : undefined}
-  aria-label={external ? `${label}: ${value}. Abre en una pestaña nueva.` : `${label}: ${value}.`}
+  aria-label={accessibleLabel}
 >
   <span class="social-icon">
     <Icon name={icon} size={22} />
   </span>
 
   <span class="social-content">
-    <span class="social-label">{label}</span>
+    <span class="social-label">
+      {label}
+      {featured && <span class="social-badge">Canal principal</span>}
+    </span>
 
     <strong>{value}</strong>
   </span>
@@ -48,14 +61,14 @@ const { label, value, href, icon, external = true } = Astro.props;
 
 <style>
   .social-link {
-    min-height: 76px;
+    min-height: 72px;
 
-    padding: 1rem 1.15rem;
+    padding: 0.9rem 1.1rem;
 
     display: flex;
     align-items: center;
 
-    gap: 1rem;
+    gap: 0.9rem;
 
     border: 1px solid var(--color-border-inverse);
 
@@ -63,14 +76,21 @@ const { label, value, href, icon, external = true } = Astro.props;
 
     color: var(--color-text-inverse);
 
-    background: rgb(255 255 255 / 0.04);
+    background: var(--color-surface-inverse);
 
     text-decoration: none;
 
     transition:
       background-color var(--transition-fast),
-      border-color var(--transition-fast),
-      transform var(--transition-fast);
+      border-color var(--transition-fast);
+  }
+
+  .social-link-featured {
+    min-height: 84px;
+
+    border-color: var(--color-accent);
+
+    background: var(--color-surface-inverse-hover);
   }
 
   .social-icon {
@@ -84,9 +104,15 @@ const { label, value, href, icon, external = true } = Astro.props;
 
     border-radius: 50%;
 
-    color: var(--color-accent);
+    color: var(--color-text-inverse-muted);
 
-    background: rgb(198 161 91 / 0.12);
+    background: var(--color-surface-inverse);
+  }
+
+  .social-link-featured .social-icon {
+    color: var(--color-primary-hover);
+
+    background: var(--color-accent);
   }
 
   .social-content {
@@ -100,6 +126,12 @@ const { label, value, href, icon, external = true } = Astro.props;
   }
 
   .social-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: 0.25rem 0.6rem;
+
     color: var(--color-text-inverse-subtle);
 
     font-size: 0.75rem;
@@ -109,10 +141,28 @@ const { label, value, href, icon, external = true } = Astro.props;
     letter-spacing: 0.08em;
   }
 
+  .social-badge {
+    padding: 0.05rem 0.45rem;
+
+    border: 1px solid var(--color-accent);
+
+    border-radius: 999px;
+
+    color: var(--color-accent);
+
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+  }
+
   .social-content strong {
     font-size: 1rem;
+    font-weight: 600;
 
     overflow-wrap: anywhere;
+  }
+
+  .social-link-featured strong {
+    font-size: 1.15rem;
   }
 
   .social-arrow {
@@ -121,18 +171,20 @@ const { label, value, href, icon, external = true } = Astro.props;
 
     flex: 0 0 20px;
 
-    color: var(--color-accent);
+    color: var(--color-text-inverse-subtle);
 
     transition: transform var(--transition-fast);
   }
 
+  .social-link-featured .social-arrow {
+    color: var(--color-accent);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .social-link:hover {
-      transform: translateY(-2px);
+      border-color: var(--color-accent);
 
-      border-color: rgb(198 161 91 / 0.55);
-
-      background: rgb(255 255 255 / 0.07);
+      background: var(--color-surface-inverse-hover);
     }
 
     .social-link:hover .social-arrow {
@@ -141,12 +193,6 @@ const { label, value, href, icon, external = true } = Astro.props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .social-link,
-    .social-arrow {
-      transition: none;
-    }
-
-    .social-link:hover,
     .social-link:hover .social-arrow {
       transform: none;
     }
