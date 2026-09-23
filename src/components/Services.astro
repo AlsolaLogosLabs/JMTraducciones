@@ -3,9 +3,10 @@ import SectionHeader from "./ui/SectionHeader.astro";
 import ServiceCard from "./ui/ServiceCard.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
-import { serviceCategories } from "../data/services";
+import { isServiceId, serviceCategories } from "../data/services";
 import { defaultLocale, type Locale } from "../i18n/config";
 import { getContent } from "../i18n/content";
+import { getServicePagesUI, getServiceURL } from "../i18n/services";
 
 interface Props {
   locale?: Locale;
@@ -14,6 +15,8 @@ interface Props {
 const { locale = defaultLocale } = Astro.props;
 
 const t = getContent(locale);
+
+const detailsLabel = getServicePagesUI(locale).detailsLink;
 ---
 
 <section id="servicios" class="section section-alt" aria-labelledby="services-title">
@@ -36,6 +39,11 @@ const t = getContent(locale);
             description={text.description}
             icon={category.icon}
             items={text.items}
+            link={
+              isServiceId(category.id)
+                ? { href: getServiceURL(locale, category.id), label: detailsLabel }
+                : undefined
+            }
           />
         );
       })}

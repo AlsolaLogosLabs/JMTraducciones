@@ -4,10 +4,12 @@ import { getContent } from "../../i18n/content";
 
 interface Props {
   locale?: Locale;
+  // URLs de la página equivalente en cada idioma. Sin ellas, se enlaza al inicio de cada idioma.
+  urls?: Partial<Record<Locale, string>>;
   class?: string;
 }
 
-const { locale = defaultLocale, class: className } = Astro.props;
+const { locale = defaultLocale, urls, class: className } = Astro.props;
 
 const t = getContent(locale);
 
@@ -24,7 +26,12 @@ const t = getContent(locale);
         <span class="sr-only">{name}</span>
       </span>
     ) : (
-      <a class="language-option" href={getHomeURL(option)} lang={option} hreflang={option}>
+      <a
+        class="language-option"
+        href={urls?.[option] ?? getHomeURL(option)}
+        lang={option}
+        hreflang={option}
+      >
         <span aria-hidden="true">{shortName}</span>
         <span class="sr-only">{name}</span>
       </a>

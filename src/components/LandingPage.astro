@@ -12,7 +12,7 @@ import Contact from "./Contact.astro";
 import Footer from "./Footer.astro";
 import FloatingWhatsApp from "./FloatingWhatsApp.astro";
 
-import type { Locale } from "../i18n/config";
+import { getAbsoluteHomeURL, locales, type Locale } from "../i18n/config";
 import { getContent } from "../i18n/content";
 
 interface Props {
@@ -23,9 +23,18 @@ interface Props {
 const { locale } = Astro.props;
 
 const t = getContent(locale);
+
+const alternateURLs = Object.fromEntries(
+  locales.map((option) => [option, getAbsoluteHomeURL(option)]),
+) as Record<Locale, string>;
 ---
 
-<MainLayout locale={locale} title={t.seo.title} description={t.seo.description} alternates>
+<MainLayout
+  locale={locale}
+  title={t.seo.title}
+  description={t.seo.description}
+  alternateURLs={alternateURLs}
+>
   <Header locale={locale} />
 
   <main id="main-content">

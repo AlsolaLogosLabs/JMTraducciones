@@ -16,6 +16,14 @@ Sitio bilingüe; el español es el idioma principal:
 | Español | https://alsolalogoslabs.github.io/JMTraducciones/    |
 | English | https://alsolalogoslabs.github.io/JMTraducciones/en/ |
 
+Páginas de servicio:
+
+| Servicio              | Español                                            | English                                                |
+| --------------------- | -------------------------------------------------- | ------------------------------------------------------ |
+| Documentos civiles    | `/JMTraducciones/servicios/documentos-civiles/`    | `/JMTraducciones/en/services/civil-documents/`         |
+| Documentos académicos | `/JMTraducciones/servicios/documentos-academicos/` | `/JMTraducciones/en/services/academic-documents/`      |
+| Documentación técnica | `/JMTraducciones/servicios/documentacion-tecnica/` | `/JMTraducciones/en/services/technical-documentation/` |
+
 ## 🧭 Secciones
 
 | Sección       | ID              | Contenido                                                         |
@@ -59,12 +67,14 @@ JMTraducciones/
 │   │   ├── Contact.astro
 │   │   ├── Credentials.astro
 │   │   ├── Express.astro
+│   │   ├── FAQ.astro
 │   │   ├── FloatingWhatsApp.astro
 │   │   ├── Footer.astro
 │   │   ├── Header.astro
 │   │   ├── Hero.astro
 │   │   ├── LandingPage.astro
 │   │   ├── Process.astro
+│   │   ├── ServicePage.astro
 │   │   ├── Services.astro
 │   │   │
 │   │   └── ui/
@@ -79,11 +89,13 @@ JMTraducciones/
 │   │       ├── ServiceCard.astro
 │   │       ├── SocialLink.astro
 │   │       ├── StepCard.astro
+│   │       ├── TranslatorStatement.astro
 │   │       └── WhatsAppButton.astro
 │   │
 │   ├── data/
 │   │   ├── contact.ts
 │   │   ├── credentials.ts
+│   │   ├── faq.ts
 │   │   ├── navigation.ts
 │   │   ├── process.ts
 │   │   ├── profile.ts
@@ -91,7 +103,8 @@ JMTraducciones/
 │   │
 │   ├── i18n/
 │   │   ├── config.ts
-│   │   └── content.ts
+│   │   ├── content.ts
+│   │   └── services.ts
 │   │
 │   ├── layouts/
 │   │   └── MainLayout.astro
@@ -99,7 +112,11 @@ JMTraducciones/
 │   ├── pages/
 │   │   ├── 404.astro
 │   │   ├── en/
-│   │   │   └── index.astro
+│   │   │   ├── index.astro
+│   │   │   └── services/
+│   │   │       └── [slug].astro
+│   │   ├── servicios/
+│   │   │   └── [slug].astro
 │   │   ├── index.astro
 │   │   └── robots.txt.ts
 │   │
@@ -117,6 +134,9 @@ JMTraducciones/
 ```text
 index.astro (es) / en/index.astro (en)
 └── LandingPage locale
+
+servicios/[slug].astro (es) / en/services/[slug].astro (en)
+└── ServicePage locale + id   breadcrumb, hero, documentos, Process, CTA WhatsApp
 
 MainLayout (SEO, Open Graph, JSON-LD, hreflang)
 ├── Header            navegación, menú móvil, scroll spy, LanguageSwitcher y CTA
@@ -137,7 +157,7 @@ Los datos que no cambian por idioma están en `src/data/`:
 
 - `profile.ts`: marca, nombre del profesional y año de idoneidad.
 - `contact.ts`: WhatsApp, email e Instagram. Las URLs de WhatsApp (`wa.me`) se construyen **solo aquí** con `createWhatsAppURL`.
-- `services.ts`: orden e iconos de las categorías de servicios.
+- `services.ts`: orden e iconos de las categorías de servicios, y `serviceIds` (`civil`, `academic`, `technical`): servicios con página propia. "Otros documentos" no tiene página.
 - `credentials.ts`: orden de los campos de la credencial.
 - `process.ts`: orden de los pasos de "Cómo funciona".
 - `navigation.ts`: IDs de sección del menú, comunes a ambos idiomas. El scroll spy del Header deriva las secciones observadas de estos enlaces.
@@ -158,6 +178,16 @@ i18n: {
 - `src/i18n/content.ts`: todos los textos traducibles, incluidos los textos accesibles (`aria-label`, `sr-only`), tipados con `LocaleContent` para que ambos idiomas tengan las mismas claves.
 - `LanguageSwitcher.astro`: selector `ES | EN` en el Header (dentro del menú en pantallas de hasta 480 px). El idioma actual lleva `aria-current`; el otro es un enlace con `lang` y `hreflang`. No hay detección ni redirección automática.
 - Mensajes de WhatsApp localizados: el texto prellenado de cotización y de servicio express se define por idioma en `content.ts` (`getWhatsAppURLs`); el número es único.
+- `src/i18n/services.ts`: contenido de las páginas de servicio por idioma (slug explícito, título, introducción, SEO, documentos y mensaje de WhatsApp contextual) y helpers de URL (`getServiceURL`, `getAbsoluteServiceURL`, `getServiceStaticPaths`).
+
+### Páginas de servicio
+
+- Rutas dinámicas con `getStaticPaths()`: `src/pages/servicios/[slug].astro` y `src/pages/en/services/[slug].astro`. Ambas renderizan `ServicePage.astro`, la plantilla común.
+- Los slugs son explícitos por idioma; el ID interno (`civil`, `academic`, `technical`) es común.
+- En páginas internas, el `Header` recibe `internalPage`: la navegación enlaza a las secciones del inicio del idioma (`/JMTraducciones/#servicios`, `/JMTraducciones/en/#servicios`) y el scroll spy queda inactivo.
+- `LanguageSwitcher` acepta `urls` opcionales: en una página de servicio lleva a la página equivalente del otro idioma; sin `urls`, lleva al inicio de cada idioma.
+- `MainLayout` recibe `alternateURLs` (URLs absolutas por idioma) para canonical/hreflang; el `x-default` apunta a la versión española de la misma página.
+- El JSON-LD del negocio es el mismo en todas las páginas (mismo `@id`); no se crean entidades por servicio.
 
 Para añadir o cambiar un texto, edítalo en ambos idiomas dentro de `content.ts`.
 
@@ -234,13 +264,13 @@ Todos los recursos internos se construyen con `import.meta.env.BASE_URL`.
 ## 🔍 SEO
 
 - Título y descripción específicos del servicio, localizados por idioma.
-- URL canónica por idioma (`/JMTraducciones/` y `/JMTraducciones/en/`).
-- `hreflang` `es`, `en` y `x-default` (español) en las páginas principales.
+- URL canónica propia en cada página (inicio y páginas de servicio, por idioma).
+- `hreflang` `es`, `en` y `x-default` (versión española equivalente) en el inicio y en cada página de servicio.
 - `<html lang>`, `og:locale` (`es_PA` / `en_PA`) y `og:locale:alternate` según el idioma.
 - Favicon SVG + ICO y `apple-touch-icon.png` (180 × 180) con la marca JM.
 - Open Graph y Twitter Card con imagen social por idioma (1200 × 630, mismo diseño): `public/og-image-es.png` y `public/og-image-en.png`. `MainLayout` elige la imagen según el `locale` (`ogImage` en `src/i18n/config.ts`) y el texto alternativo sale de `content.ts`.
 - Datos estructurados JSON-LD de tipo `ProfessionalService`, localizados por idioma.
-- Sitemap generado por `@astrojs/sitemap` con ambas versiones.
+- Sitemap generado por `@astrojs/sitemap` con el inicio y las páginas de servicio en ambos idiomas.
 - Página 404 con `noindex`, sin canonical ni hreflang.
 - `robots.txt` generado en `src/pages/robots.txt.ts`.
 

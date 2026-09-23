@@ -1,0 +1,16 @@
+---
+import ServicePage from "../../components/ServicePage.astro";
+
+import type { ServiceId } from "../../data/services";
+import { getServiceStaticPaths } from "../../i18n/services";
+
+export const getStaticPaths = () => getServiceStaticPaths("es");
+
+interface Props {
+  id: ServiceId;
+}
+
+const { id } = Astro.props;
+---
+
+<ServicePage locale="es" id={id} />

@@ -18,8 +18,8 @@ interface Props {
   description?: string;
   // Páginas de error: no se indexan, no declaran URL canónica ni datos estructurados.
   noindex?: boolean;
-  // Páginas disponibles en todos los idiomas: añade hreflang y og:locale:alternate.
-  alternates?: boolean;
+  // URLs absolutas de la página equivalente en cada idioma: añade hreflang y og:locale:alternate.
+  alternateURLs?: Record<Locale, string>;
 }
 
 const {
@@ -27,7 +27,7 @@ const {
   title,
   description = getContent(locale).seo.description,
   noindex = false,
-  alternates = false,
+  alternateURLs,
 } = Astro.props;
 
 const t = getContent(locale);
@@ -58,7 +58,8 @@ const businessSchema = {
 
   name: profile.brand,
 
-  description,
+  // Descripción del negocio, no de la página concreta (en la landing coinciden).
+  description: t.seo.description,
 
   url: homeURL,
 
@@ -132,13 +133,13 @@ const businessSchema = {
 
     {!noindex && <link rel="canonical" href={canonicalURL} />}
 
-    {alternates &&
+    {alternateURLs &&
       locales.map((option) => (
-        <link rel="alternate" hreflang={option} href={getAbsoluteHomeURL(option)} />
+        <link rel="alternate" hreflang={option} href={alternateURLs[option]} />
       ))}
 
-    {alternates && (
-      <link rel="alternate" hreflang="x-default" href={getAbsoluteHomeURL(defaultLocale)} />
+    {alternateURLs && (
+      <link rel="alternate" hreflang="x-default" href={alternateURLs[defaultLocale]} />
     )}
 
     <link rel="sitemap" href={`${baseURL}sitemap-index.xml`} />
@@ -153,7 +154,7 @@ const businessSchema = {
 
     <meta property="og:locale" content={localeSettings[locale].ogLocale} />
 
-    {alternates &&
+    {alternateURLs &&
       alternateLocales.map((option) => (
         <meta property="og:locale:alternate" content={localeSettings[option].ogLocale} />
       ))}

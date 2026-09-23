@@ -4,20 +4,29 @@ import LanguageSwitcher from "./ui/LanguageSwitcher.astro";
 import WhatsAppButton from "./ui/WhatsAppButton.astro";
 
 import { navigationSections } from "../data/navigation";
-import { defaultLocale, type Locale } from "../i18n/config";
+import { defaultLocale, getHomeURL, type Locale } from "../i18n/config";
 import { getContent } from "../i18n/content";
 
 interface Props {
   locale?: Locale;
+  // Páginas internas: la navegación enlaza a las secciones del inicio y el scroll spy queda inactivo.
+  internalPage?: boolean;
+  // URLs de la página equivalente en cada idioma, para el selector de idioma.
+  languageURLs?: Partial<Record<Locale, string>>;
 }
 
-const { locale = defaultLocale } = Astro.props;
+const { locale = defaultLocale, internalPage = false, languageURLs } = Astro.props;
 
 const t = getContent(locale);
+
+const sectionBaseURL = internalPage ? getHomeURL(locale) : "";
 
 const navigationItems = navigationSections.map((section) => ({
   section,
   label: t.header.navigation[section],
+  href: `${sectionBaseURL}#${section}`,
+  // El scroll spy solo observa enlaces con data-nav-section, que existen únicamente en la landing.
+  spySection: internalPage ? undefined : section,
 }));
 ---
 
@@ -31,13 +40,13 @@ const navigationItems = navigationSections.map((section) => ({
 
     <div class="desktop-navigation">
       {navigationItems.map((item) => (
-        <a href={`#${item.section}`} data-nav-section={item.section}>
+        <a class="nav-link" href={item.href} data-nav-section={item.spySection}>
           {item.label}
         </a>
       ))}
     </div>
 
-    <LanguageSwitcher locale={locale} class="header-language" />
+    <LanguageSwitcher locale={locale} urls={languageURLs} class="header-language" />
 
     <WhatsAppButton locale={locale} label={t.header.quoteCta} class="header-cta" />
 
@@ -54,12 +63,12 @@ const navigationItems = navigationSections.map((section) => ({
 
       <div class="mobile-navigation">
         {navigationItems.map((item) => (
-          <a href={`#${item.section}`} data-nav-section={item.section}>
+          <a class="nav-link" href={item.href} data-nav-section={item.spySection}>
             {item.label}
           </a>
         ))}
 
-        <LanguageSwitcher locale={locale} class="mobile-language" />
+        <LanguageSwitcher locale={locale} urls={languageURLs} class="mobile-language" />
 
         <WhatsAppButton locale={locale} label={t.header.mobileQuoteCta} class="mobile-cta" />
       </div>
@@ -419,7 +428,7 @@ const navigationItems = navigationSections.map((section) => ({
     box-shadow: var(--shadow-lg);
   }
 
-  .mobile-navigation a[data-nav-section] {
+  .mobile-navigation a.nav-link {
     min-height: 48px;
 
     padding: 0.75rem 1rem;
@@ -436,7 +445,7 @@ const navigationItems = navigationSections.map((section) => ({
     text-decoration: none;
   }
 
-  .mobile-navigation a[data-nav-section]:hover {
+  .mobile-navigation a.nav-link:hover {
     color: var(--color-text);
 
     background: var(--color-primary-soft);

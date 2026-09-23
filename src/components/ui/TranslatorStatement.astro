@@ -1,0 +1,26 @@
+---
+import LanguagePair from "./LanguagePair.astro";
+
+import { defaultLocale, type Locale } from "../../i18n/config";
+import { getContent } from "../../i18n/content";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = getContent(locale);
+
+// Frase aprobada sobre el reconocimiento del traductor. El contenedor (<p>) lo pone quien la usa.
+---
+
+{`${t.credentials.introLead} ${t.profile.role} `}
+{t.profile.roleOriginal && (
+  <>
+    (<span lang="es">{t.profile.roleOriginal}</span>){" "}
+  </>
+)}
+{`${t.credentials.introLanguagesPrefix} `}
+<LanguagePair locale={locale} />
+{t.credentials.introEnd}
